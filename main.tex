@@ -1,0 +1,222 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[top=1.5cm, bottom=2.0cm, left=1.2cm, right=1.2cm]{geometry}
+\usepackage{tikz, pgfplots, pgfplotstable}
+\usepackage{etoolbox}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.17}
+
+% ====================================================================
+% PLOT THEME SELECTOR -- change this single line to switch palettes:
+%   okabe        Okabe-Ito + line-style redundancy   (best all-rounder)
+%   okabe-solid  Okabe-Ito, all solid                (cleanest, color only)
+%   tol-bright   Paul Tol bright                     (vivid, high contrast)
+%   tol-muted    Paul Tol muted                      (soft, journal-style)
+%   grayscale    Original B/W with line-width coding (no color at all)
+% ====================================================================
+\newcommand{\plottheme}{greyscale} % <-- CHANGE THIS VALUE TO SWITCH THEMES
+
+% --- Spelling aliases (so typos and British spelling still work) ---
+\ifdefstring{\plottheme}{greyscale}{\renewcommand{\plottheme}{grayscale}}{}
+\ifdefstring{\plottheme}{gray}{\renewcommand{\plottheme}{grayscale}}{}
+\ifdefstring{\plottheme}{grey}{\renewcommand{\plottheme}{grayscale}}{}
+
+% --- THEME: okabe (Okabe-Ito, double-encoded) ---
+\ifdefstring{\plottheme}{okabe}{%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt}
+    }
+}{}
+
+% --- THEME: okabe-solid (Okabe-Ito, all solid) ---
+\ifdefstring{\plottheme}{okabe-solid}{%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid, line width=1.2pt},
+        style2/.style={c2, solid, line width=1.2pt},
+        style3/.style={c3, solid, line width=1.2pt},
+        style4/.style={c4, solid, line width=1.2pt},
+        styleAux/.style={cAux, solid, line width=1.0pt}
+    }
+}{}
+
+% --- THEME: tol-bright (Paul Tol bright) ---
+\ifdefstring{\plottheme}{tol-bright}{%
+    \definecolor{c1}{HTML}{4477AA}\definecolor{c2}{HTML}{EE6677}%
+    \definecolor{c3}{HTML}{228833}\definecolor{c4}{HTML}{CCBB44}%
+    \definecolor{cAux}{HTML}{66CCEE}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt}
+    }
+}{}
+
+% --- THEME: tol-muted (Paul Tol muted) ---
+\ifdefstring{\plottheme}{tol-muted}{%
+    \definecolor{c1}{HTML}{332288}\definecolor{c2}{HTML}{CC6677}%
+    \definecolor{c3}{HTML}{44AA99}\definecolor{c4}{HTML}{DDCC77}%
+    \definecolor{cAux}{HTML}{88CCEE}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt}
+    }
+}{}
+
+% --- THEME: grayscale (original) ---
+\ifdefstring{\plottheme}{grayscale}{%
+    \colorlet{c1}{black!30}\colorlet{c2}{black!60}%
+    \colorlet{c3}{black}\colorlet{c4}{black!80}%
+    \colorlet{cAux}{black!50}%
+    \pgfplotsset{
+        styleRef/.style={black!50, solid, line width=1.0pt},
+        style1/.style={c1, solid,          line width=3.0pt},
+        style2/.style={c2, solid,          line width=1.5pt},
+        style3/.style={c3, solid,          line width=0.6pt},
+        style4/.style={c4, densely dotted, line width=1.5pt},
+        styleAux/.style={cAux, solid,      line width=0.6pt}
+    }
+}{}
+
+% --- Fallback: if \plottheme is unknown, warn loudly and use okabe ---
+\ifboolexpr{%
+    test {\ifdefstring{\plottheme}{okabe}}
+    or test {\ifdefstring{\plottheme}{okabe-solid}}
+    or test {\ifdefstring{\plottheme}{tol-bright}}
+    or test {\ifdefstring{\plottheme}{tol-muted}}
+    or test {\ifdefstring{\plottheme}{grayscale}}
+}{}{%
+    \GenericWarning{}{%
+        Plot theme '\plottheme' not recognized.
+        Valid options: okabe, okabe-solid, tol-bright, tol-muted, grayscale.
+        Falling back to 'okabe'%
+    }%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt}
+    }%
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{figure}[p]
+    \centering
+    \large\bfseries NMPC Close-Loop Baseline Configuration \par % Title line
+    \vspace{0.5cm}   % optional spacing
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group name=myplots,
+                group size=2 by 3,
+                horizontal sep=2.2cm,
+                vertical sep=3.5cm, % MAXIMIZE VERTICAL SPACE
+            },
+            width=0.45\textwidth, height=5.5cm,
+            grid=major,
+            xmin=0, xmax=2000, % FIXED AXIS RANGE
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            xlabel={Time [ms]},
+            table/col sep=comma,
+            legend style={font=\tiny, at={(1,1)}, anchor=north east, fill opacity=0.8}
+        ]
+
+        % ROW 1: Position & Orientation
+        \nextgroupplot[title=Position, ylabel={[mm]}]
+            \addplot[styleRef] table[x=Time, y=z_ref] {nmpc_plot_data.csv}; \addlegendentry{z$_{eq}$}
+            \addplot[style1]   table[x=Time, y=x] {nmpc_plot_data.csv}; \addlegendentry{x}
+            \addplot[style2]   table[x=Time, y=y] {nmpc_plot_data.csv}; \addlegendentry{y}
+            \addplot[style3]   table[x=Time, y=z] {nmpc_plot_data.csv}; \addlegendentry{z}
+
+        \nextgroupplot[title=Orientation, ylabel={[deg]}]
+            \addplot[style1]   table[x=Time, y=roll]  {nmpc_plot_data.csv}; \addlegendentry{$\alpha$}
+            \addplot[style2]   table[x=Time, y=pitch] {nmpc_plot_data.csv}; \addlegendentry{$\beta$}
+            \addplot[style3]   table[x=Time, y=yaw]   {nmpc_plot_data.csv}; \addlegendentry{$\gamma$}
+
+        % ROW 2: Linear & Angular Velocity
+        \nextgroupplot[title=Linear Velocity, ylabel={[mm/s]}]
+            \addplot[style1]   table[x=Time, y=vx] {nmpc_plot_data.csv}; \addlegendentry{v$_x$}
+            \addplot[style2]   table[x=Time, y=vy] {nmpc_plot_data.csv}; \addlegendentry{v$_y$}
+            \addplot[style3]   table[x=Time, y=vz] {nmpc_plot_data.csv}; \addlegendentry{v$_z$}
+
+        \nextgroupplot[title=Angular Velocity, ylabel={[deg/s]}]
+            \addplot[style1]   table[x=Time, y=wx] {nmpc_plot_data.csv}; \addlegendentry{$\omega_x$}
+            \addplot[style2]   table[x=Time, y=wy] {nmpc_plot_data.csv}; \addlegendentry{$\omega_y$}
+            \addplot[style3]   table[x=Time, y=wz] {nmpc_plot_data.csv}; \addlegendentry{$\omega_z$}
+
+        % ROW 3: Currents & Solver Performance
+        \nextgroupplot[title=Solenoid Currents, ylabel={[A]}]
+            \addplot[style1]   table[x=Time, y=u1] {nmpc_plot_data.csv}; \addlegendentry{u$_1$}
+            \addplot[style2]   table[x=Time, y=u2] {nmpc_plot_data.csv}; \addlegendentry{u$_2$}
+            \addplot[style3]   table[x=Time, y=u3] {nmpc_plot_data.csv}; \addlegendentry{u$_3$}
+            \addplot[style4]   table[x=Time, y=u4] {nmpc_plot_data.csv}; \addlegendentry{u$_4$}
+
+        \nextgroupplot[
+            title=Solver Performance,
+            ylabel={Status (0=OK)},
+            ymin=-1, ymax=1,
+            ytick={-1,0,1},
+            axis y line*=left
+        ]
+            \addplot[only marks, mark=x, black, line width=0.8pt] table[x=Time, y=status] {nmpc_plot_data.csv};
+
+        \end{groupplot}
+
+        % --- SECONDARY AXIS (Aligned to Bottom-Right Plot Only) ---
+        \begin{axis}[
+            at={(myplots c2r3.south west)}, anchor=south west,
+            width=0.45\textwidth, height=5.5cm,
+            xmin=0, xmax=2000,
+            hide x axis,
+            axis y line*=right,
+            ylabel={Solve Time [ms]},
+            ylabel style={yshift=0.2cm},
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            table/col sep=comma
+        ]
+            \addplot[styleAux] table[x=Time, y=dt_ms] {nmpc_plot_data.csv};
+        \end{axis}
+
+        % --- COMBINED LEGEND: symbol left, text right ---
+        \node[anchor=north east, font=\tiny, fill=white, fill opacity=0.8, inner sep=3pt, draw=black] 
+            at (myplots c2r3.north east) {
+            \begin{tabular}{@{}l r@{}}
+                \tikz[baseline=-0.4ex]{
+                    \draw[black, line width=0.8pt] (-0.08,-0.08) -- (0.08,0.08) (0.08,-0.08) -- (-0.08,0.08);
+                } & Status \\[2pt]
+                \tikz[baseline=-0.4ex]{
+                    \draw[cAux, solid, line width=1.0pt] (0,0) -- (0.5,0);
+                } & Solve Time
+            \end{tabular}
+        };
+
+    \end{tikzpicture}
+\end{figure}
+
+\end{document}
