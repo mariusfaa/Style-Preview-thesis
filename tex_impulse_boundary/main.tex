@@ -1,0 +1,303 @@
+% !TEX program = pdflatex
+\documentclass[a4paper, 11pt]{article}
+\usepackage[top=1.5cm, bottom=2.0cm, left=1.2cm, right=1.2cm]{geometry}
+\usepackage{tikz, pgfplots, pgfplotstable}
+\usepackage{etoolbox}
+\usepgfplotslibrary{groupplots, colormaps, polar}
+\pgfplotsset{compat=1.17}
+
+% ====================================================================
+% PLOT THEME SELECTOR -- change this single line to switch palettes:
+%   okabe        Okabe-Ito + line-style redundancy   (best all-rounder)
+%   okabe-solid  Okabe-Ito, all solid                (cleanest, color only)
+%   tol-bright   Paul Tol bright                     (vivid, high contrast)
+%   tol-muted    Paul Tol muted                      (soft, journal-style)
+%   grayscale    Original B/W with line-width coding (no color at all)
+% ====================================================================
+\newcommand{\plottheme}{okabe} % <-- CHANGE THIS VALUE TO SWITCH THEMES
+
+% --- Spelling aliases (so typos and British spelling still work) ---
+\ifdefstring{\plottheme}{greyscale}{\renewcommand{\plottheme}{grayscale}}{}
+\ifdefstring{\plottheme}{gray}{\renewcommand{\plottheme}{grayscale}}{}
+\ifdefstring{\plottheme}{grey}{\renewcommand{\plottheme}{grayscale}}{}
+
+% --- THEME: okabe (Okabe-Ito, double-encoded) ---
+\ifdefstring{\plottheme}{okabe}{%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/viridis}
+}{}
+
+% --- THEME: okabe-solid (Okabe-Ito, all solid) ---
+\ifdefstring{\plottheme}{okabe-solid}{%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid, line width=1.2pt},
+        style2/.style={c2, solid, line width=1.2pt},
+        style3/.style={c3, solid, line width=1.2pt},
+        style4/.style={c4, solid, line width=1.2pt},
+        styleAux/.style={cAux, solid, line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/viridis}
+}{}
+
+% --- THEME: tol-bright (Paul Tol bright) ---
+\ifdefstring{\plottheme}{tol-bright}{%
+    \definecolor{c1}{HTML}{4477AA}\definecolor{c2}{HTML}{EE6677}%
+    \definecolor{c3}{HTML}{228833}\definecolor{c4}{HTML}{CCBB44}%
+    \definecolor{cAux}{HTML}{66CCEE}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/viridis}
+}{}
+
+% --- THEME: tol-muted (Paul Tol muted) ---
+\ifdefstring{\plottheme}{tol-muted}{%
+    \definecolor{c1}{HTML}{332288}\definecolor{c2}{HTML}{CC6677}%
+    \definecolor{c3}{HTML}{44AA99}\definecolor{c4}{HTML}{DDCC77}%
+    \definecolor{cAux}{HTML}{88CCEE}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/viridis}
+}{}
+
+% --- THEME: grayscale (original) ---
+\ifdefstring{\plottheme}{grayscale}{%
+    \colorlet{c1}{black!30}\colorlet{c2}{black!60}%
+    \colorlet{c3}{black}\colorlet{c4}{black!80}%
+    \colorlet{cAux}{black!50}%
+    \pgfplotsset{
+        styleRef/.style={black!50, solid, line width=1.0pt},
+        style1/.style={c1, solid,          line width=3.0pt},
+        style2/.style={c2, solid,          line width=1.5pt},
+        style3/.style={c3, solid,          line width=0.6pt},
+        style4/.style={c4, densely dotted, line width=1.5pt},
+        styleAux/.style={cAux, solid,      line width=0.6pt},
+        styleBar/.style={fill=black!40, draw=black, line width=0.4pt},
+        styleMark/.style={black, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/blackwhite}
+}{}
+
+% --- Fallback: if \plottheme is unknown, warn loudly and use okabe ---
+\ifboolexpr{%
+    test {\ifdefstring{\plottheme}{okabe}}
+    or test {\ifdefstring{\plottheme}{okabe-solid}}
+    or test {\ifdefstring{\plottheme}{tol-bright}}
+    or test {\ifdefstring{\plottheme}{tol-muted}}
+    or test {\ifdefstring{\plottheme}{grayscale}}
+}{}{%
+    \GenericWarning{}{%
+        Plot theme '\plottheme' not recognized.
+        Valid options: okabe, okabe-solid, tol-bright, tol-muted, grayscale.
+        Falling back to 'okabe'%
+    }%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }%
+    \pgfplotsset{colormap/viridis}%
+}
+
+% --- Load metadata so axis ranges / labels are data-driven ---
+\pgfplotstableread[col sep=comma]{meta.csv}\metatable
+\pgfplotstablegetelem{0}{value}\of\metatable \let\searchlimit\pgfplotsretval
+\pgfplotstablegetelem{1}{value}\of\metatable \let\controllername\pgfplotsretval
+\pgfplotstablegetelem{2}{value}\of\metatable \let\numdirs\pgfplotsretval
+\pgfplotstablegetelem{3}{value}\of\metatable \let\critmin\pgfplotsretval
+\pgfplotstablegetelem{4}{value}\of\metatable \let\critmax\pgfplotsretval
+
+% --- Load bar table to extract pole values (row 48 = top pole, row 49 = bottom pole) ---
+\pgfplotstableread[col sep=comma]{impulse_bars.csv}\barstable
+\pgfplotstablegetelem{48}{recoverable}\of\barstable  \let\poletoprec\pgfplotsretval
+\pgfplotstablegetelem{48}{first_failure}\of\barstable \let\poletopp\pgfplotsretval
+\pgfplotstablegetelem{49}{recoverable}\of\barstable  \let\polebotrec\pgfplotsretval
+\pgfplotstablegetelem{49}{first_failure}\of\barstable \let\polebotff\pgfplotsretval
+
+% --- Spider chart shared style ---
+\pgfplotsset{
+    spiderstyle/.style={
+        width=5cm, height=5cm,
+        xtick={0,22.5,45,...,337.5},
+        xticklabels={$+x$,,,,{$+y$},,,,{$-x$},,,,{$-y$},,,,},
+        xticklabel style={font=\tiny},
+        ytick={0.01,0.02,0.03,0.04,0.05},
+        yticklabel style={font=\tiny},
+        ymin=0, ymax=0.05,
+        tick label style={font=\tiny},
+        grid=major,
+        title style={font=\small\bfseries},
+        table/col sep=comma,
+    }
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{figure}[p]
+    \centering
+    \large\bfseries Impulse Robustness Boundary (\controllername{} Controller)\par
+    \vspace{0.4cm}
+
+    \begin{tikzpicture}
+
+        % ============================================================
+        % SPIDER CHARTS: one per elevation ring
+        % Elevation order (left to right): -27°, 0°, +27°
+        % Azimuths are 0°–337.5° in 22.5° steps; last row closes polygon.
+        % ============================================================
+
+        \begin{polaraxis}[
+            spiderstyle,
+            name=spLow,
+            at={(0cm,0cm)}, anchor=north west,
+            title={Elevation $\approx{-27}^\circ$},
+        ]
+            \addplot[fill=c1!25, draw=c1, line width=0.9pt]
+                table[x=azimuth, y=recoverable]{spider_lower.csv};
+            \addplot[draw=c2, dashed, line width=0.9pt]
+                table[x=azimuth, y=first_failure]{spider_lower.csv};
+        \end{polaraxis}
+
+        \begin{polaraxis}[
+            spiderstyle,
+            name=spEq,
+            at={(6.5cm,0cm)}, anchor=north west,
+            title={Elevation $= 0^\circ$},
+            legend style={
+                font=\tiny,
+                at={(0.5,-0.10)}, anchor=north,
+                legend columns=2,
+                inner sep=2pt,
+                fill=white, fill opacity=0.9, draw=black!40,
+            },
+        ]
+            \addplot[fill=c1!25, draw=c1, line width=0.9pt, area legend]
+                table[x=azimuth, y=recoverable]{spider_eq.csv};
+            \addlegendentry{recoverable lower bound}
+            \addplot[draw=c2, dashed, line width=0.9pt]
+                table[x=azimuth, y=first_failure]{spider_eq.csv};
+            \addlegendentry{first failing upper bound}
+        \end{polaraxis}
+
+        \begin{polaraxis}[
+            spiderstyle,
+            name=spHigh,
+            at={(12.8cm,0cm)}, anchor=north west,
+            title={Elevation $\approx{+27}^\circ$},
+        ]
+            \addplot[fill=c1!25, draw=c1, line width=0.9pt]
+                table[x=azimuth, y=recoverable]{spider_high.csv};
+            \addplot[draw=c2, dashed, line width=0.9pt]
+                table[x=azimuth, y=first_failure]{spider_high.csv};
+        \end{polaraxis}
+
+        % ============================================================
+        % POLE ANNOTATIONS (elevation = ±90°, single directions)
+        % ============================================================
+
+        \node[
+            anchor=north, align=center, font=\footnotesize,
+            draw=black!35, fill=white, rounded corners=3pt, inner sep=5pt,
+            text width=4.8cm,
+        ] at (2.5cm,-6.4cm) {%
+            \textbf{Bottom pole} ($-z$, elev.\ $={-90}^\circ$)\\[2pt]
+            Recoverable:~~\polebotrec\,m/s\\
+            First failure:~\polebotff\,m/s%
+        };
+
+        \node[
+            anchor=north, align=center, font=\footnotesize,
+            draw=black!35, fill=white, rounded corners=3pt, inner sep=5pt,
+            text width=4.8cm,
+        ] at (15.3cm,-6.4cm) {%
+            \textbf{Top pole} ($+z$, elev.\ $={+90}^\circ$)\\[2pt]
+            Recoverable:~~\poletoprec\,m/s\\
+            First failure:~\poletopp\,m/s%
+        };
+
+        % ============================================================
+        % 3D SCATTER: recoverable boundary by direction (unchanged)
+        % ============================================================
+        \begin{axis}[
+            name=scatter3d,
+            at={(9.3cm,-9.2cm)}, anchor=north,
+            width=0.65\textwidth, height=12cm,
+            view={45}{25},
+            title={Recoverable Boundary by Direction},
+            title style={font=\small\bfseries},
+            xlabel={direction $x$},
+            ylabel={direction $y$},
+            zlabel={direction $z$},
+            xmin=-1.5, xmax=1.5,
+            ymin=-1.5, ymax=1.5,
+            zmin=-1.5, zmax=1.5,
+            grid=major,
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            colorbar,
+            point meta min=\critmin, point meta max=\critmax,
+            colorbar style={
+                width=0.25cm,
+                ylabel={critical velocity kick [m/s]},
+                ylabel style={font=\scriptsize},
+                tick label style={font=\scriptsize},
+                scaled y ticks=false,
+                yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=2},
+            },
+            table/col sep=comma,
+        ]
+            \addplot3[
+                only marks,
+                scatter,
+                scatter src=explicit,
+                mark=*,
+                mark size=2.2pt,
+            ] table[x=dx, y=dy, z=dz, meta=critical]{impulse_directions.csv};
+        \end{axis}
+
+    \end{tikzpicture}
+\end{figure}
+
+\end{document}

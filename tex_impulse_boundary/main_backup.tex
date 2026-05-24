@@ -1,0 +1,300 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[top=1.5cm, bottom=2.0cm, left=1.2cm, right=1.2cm]{geometry}
+\usepackage{tikz, pgfplots, pgfplotstable}
+\usepackage{etoolbox}
+\usepackage{booktabs}
+\usepgfplotslibrary{groupplots, colormaps}
+\pgfplotsset{compat=1.17}
+
+% ====================================================================
+% PLOT THEME SELECTOR -- change this single line to switch palettes:
+%   okabe        Okabe-Ito + line-style redundancy   (best all-rounder)
+%   okabe-solid  Okabe-Ito, all solid                (cleanest, color only)
+%   tol-bright   Paul Tol bright                     (vivid, high contrast)
+%   tol-muted    Paul Tol muted                      (soft, journal-style)
+%   grayscale    Original B/W with line-width coding (no color at all)
+% ====================================================================
+\newcommand{\plottheme}{okabe} % <-- CHANGE THIS VALUE TO SWITCH THEMES
+
+% --- Spelling aliases (so typos and British spelling still work) ---
+\ifdefstring{\plottheme}{greyscale}{\renewcommand{\plottheme}{grayscale}}{}
+\ifdefstring{\plottheme}{gray}{\renewcommand{\plottheme}{grayscale}}{}
+\ifdefstring{\plottheme}{grey}{\renewcommand{\plottheme}{grayscale}}{}
+
+% --- THEME: okabe (Okabe-Ito, double-encoded) ---
+\ifdefstring{\plottheme}{okabe}{%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/viridis}
+}{}
+
+% --- THEME: okabe-solid (Okabe-Ito, all solid) ---
+\ifdefstring{\plottheme}{okabe-solid}{%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid, line width=1.2pt},
+        style2/.style={c2, solid, line width=1.2pt},
+        style3/.style={c3, solid, line width=1.2pt},
+        style4/.style={c4, solid, line width=1.2pt},
+        styleAux/.style={cAux, solid, line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/viridis}
+}{}
+
+% --- THEME: tol-bright (Paul Tol bright) ---
+\ifdefstring{\plottheme}{tol-bright}{%
+    \definecolor{c1}{HTML}{4477AA}\definecolor{c2}{HTML}{EE6677}%
+    \definecolor{c3}{HTML}{228833}\definecolor{c4}{HTML}{CCBB44}%
+    \definecolor{cAux}{HTML}{66CCEE}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/viridis}
+}{}
+
+% --- THEME: tol-muted (Paul Tol muted) ---
+\ifdefstring{\plottheme}{tol-muted}{%
+    \definecolor{c1}{HTML}{332288}\definecolor{c2}{HTML}{CC6677}%
+    \definecolor{c3}{HTML}{44AA99}\definecolor{c4}{HTML}{DDCC77}%
+    \definecolor{cAux}{HTML}{88CCEE}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/viridis}
+}{}
+
+% --- THEME: grayscale (original) ---
+\ifdefstring{\plottheme}{grayscale}{%
+    \colorlet{c1}{black!30}\colorlet{c2}{black!60}%
+    \colorlet{c3}{black}\colorlet{c4}{black!80}%
+    \colorlet{cAux}{black!50}%
+    \pgfplotsset{
+        styleRef/.style={black!50, solid, line width=1.0pt},
+        style1/.style={c1, solid,          line width=3.0pt},
+        style2/.style={c2, solid,          line width=1.5pt},
+        style3/.style={c3, solid,          line width=0.6pt},
+        style4/.style={c4, densely dotted, line width=1.5pt},
+        styleAux/.style={cAux, solid,      line width=0.6pt},
+        styleBar/.style={fill=black!40, draw=black, line width=0.4pt},
+        styleMark/.style={black, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }
+    \pgfplotsset{colormap/blackwhite}
+}{}
+
+% --- Fallback: if \plottheme is unknown, warn loudly and use okabe ---
+\ifboolexpr{%
+    test {\ifdefstring{\plottheme}{okabe}}
+    or test {\ifdefstring{\plottheme}{okabe-solid}}
+    or test {\ifdefstring{\plottheme}{tol-bright}}
+    or test {\ifdefstring{\plottheme}{tol-muted}}
+    or test {\ifdefstring{\plottheme}{grayscale}}
+}{}{%
+    \GenericWarning{}{%
+        Plot theme '\plottheme' not recognized.
+        Valid options: okabe, okabe-solid, tol-bright, tol-muted, grayscale.
+        Falling back to 'okabe'%
+    }%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        styleBar/.style={fill=c1, draw=c1!70!black, line width=0.4pt},
+        styleMark/.style={c2, mark=x, only marks, line width=1pt, mark size=2.5pt}
+    }%
+    \pgfplotsset{colormap/viridis}%
+}
+
+% --- Load metadata so axis ranges / labels are data-driven ---
+\pgfplotstableread[col sep=comma]{meta.csv}\metatable
+\pgfplotstablegetelem{0}{value}\of\metatable \let\searchlimit\pgfplotsretval
+\pgfplotstablegetelem{1}{value}\of\metatable \let\controllername\pgfplotsretval
+\pgfplotstablegetelem{2}{value}\of\metatable \let\numdirs\pgfplotsretval
+\pgfplotstablegetelem{3}{value}\of\metatable \let\critmin\pgfplotsretval
+\pgfplotstablegetelem{4}{value}\of\metatable \let\critmax\pgfplotsretval
+
+% Bar-chart x range: 0.5 ... numdirs + 0.5
+\pgfmathsetmacro{\xmaxbar}{\numdirs + 0.5}
+
+% Direction lookup table with derived spherical coordinates
+\pgfplotstableread[col sep=comma]{impulse_directions.csv}\dirtable
+\pgfplotstablecreatecol[create col/expr={\pgfplotstablerow+1}]{idx}{\dirtable}
+\pgfplotstablecreatecol[create col/expr={atan2(\thisrow{dy},\thisrow{dx})}]{azimuth}{\dirtable}
+\pgfplotstablecreatecol[
+    create col/expr={atan2(\thisrow{dz},sqrt(\thisrow{dx}*\thisrow{dx}+\thisrow{dy}*\thisrow{dy}))}
+]{elevation}{\dirtable}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{figure}[p]
+    \centering
+    \large\bfseries Impulse Robustness Boundary (\controllername{} Controller)\par
+    \vspace{0.5cm}
+
+    \begin{tikzpicture}
+        % ============================================================
+        % TOP: direction map - azimuth/elevation of each index
+        % ============================================================
+        \begin{axis}[
+            name=dirmap,
+            width=0.92\textwidth, height=4.0cm,
+            grid=major,
+            title={Impulse Direction Map\\[2pt]{\normalfont\scriptsize Numbered dots correspond to the impulse direction index in the bar chart below}},
+            title style={font=\small\bfseries, align=center},
+            xlabel={Azimuth [\textdegree]},
+            ylabel={Elevation [\textdegree]},
+            xmin=-195, xmax=195,
+            ymin=-100, ymax=100,
+            xtick={-180,-135,-90,-45,0,45,90,135,180},
+            ytick={-90,-45,0,45,90},
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+        ]
+            % All directions except index 49
+            \addplot[
+                only marks, style1,
+                mark=*, mark size=2pt,
+                nodes near coords,
+                nodes near coords style={font=\tiny, anchor=south west, inner sep=1pt},
+                point meta=explicit,
+                x filter/.code={\pgfmathparse{\coordindex==48 ? nan : #1}\pgfmathresult},
+            ] table[x=azimuth, y=elevation, meta=idx] {\dirtable};
+            % Index 49 separately with label below the dot
+            \addplot[
+                only marks, style1,
+                mark=*, mark size=2pt,
+                nodes near coords,
+                nodes near coords style={font=\tiny, anchor=north west, inner sep=1pt},
+                point meta=explicit,
+                x filter/.code={\pgfmathparse{\coordindex==48 ? #1 : nan}\pgfmathresult},
+            ] table[x=azimuth, y=elevation, meta=idx] {\dirtable};
+        \end{axis}
+
+        % ============================================================
+        % MIDDLE: bar chart - largest recoverable impulse velocity
+        % ============================================================
+        \begin{axis}[
+            name=barplot,
+            at={(dirmap.below south)}, anchor=north, yshift=-2.6cm,
+            width=0.92\textwidth, height=6cm,
+            grid=major,
+            title={Largest Recoverable Impulse Velocity (search limit: \searchlimit\,m/s)},
+            title style={font=\small\bfseries},
+            xlabel={Impulse direction index},
+            ylabel={Velocity kick magnitude [m/s]},
+            xmin=0.5, xmax=\xmaxbar,
+            ymin=0, ymax=0.2,
+            scaled y ticks=false,
+            bar width=4pt,
+            tick label style={font=\scriptsize},
+            yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=2},
+            label style={font=\footnotesize},
+            legend cell align={left},
+            legend style={font=\tiny, at={(0.02,0.98)}, anchor=north west,
+                          fill=white, fill opacity=0.85, draw=black, inner sep=3pt},
+            table/col sep=comma,
+        ]
+            \addplot[ybar, styleBar, area legend] table[x=idx, y=recoverable] {impulse_bars.csv};
+            \addlegendentry{recoverable lower bound}
+
+            \addplot[styleMark] table[x=idx, y=first_failure] {impulse_bars.csv};
+            \addlegendentry{first failing upper bound}
+        \end{axis}
+
+        % ============================================================
+        % BOTTOM: 3D scatter - recoverable boundary by direction
+        % ============================================================
+        \begin{axis}[
+            name=scatter3d,
+            at={(barplot.below south)}, anchor=north, yshift=-1.4cm,
+            width=0.65\textwidth, height=8cm,
+            view={45}{25},
+            title={Recoverable Boundary by Direction},
+            title style={font=\small\bfseries},
+            xlabel={direction $x$},
+            ylabel={direction $y$},
+            zlabel={direction $z$},
+            xmin=-1.1, xmax=1.1,
+            ymin=-1.1, ymax=1.1,
+            zmin=-1.1, zmax=1.1,
+            grid=major,
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            colorbar,
+            point meta min=\critmin, point meta max=\critmax,
+            colorbar style={
+                width=0.25cm,
+                ylabel={critical velocity kick [m/s]},
+                ylabel style={font=\scriptsize},
+                tick label style={font=\scriptsize},
+                scaled y ticks=false,
+                yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=2},
+            },
+            table/col sep=comma,
+        ]
+            \addplot3[
+                only marks,
+                scatter,
+                scatter src=explicit,
+                mark=*,
+                mark size=2.2pt,
+            ] table[x=dx, y=dy, z=dz, meta=critical] {impulse_directions.csv};
+        \end{axis}
+
+        % Reference table between direction map and bar chart
+        \node[
+            anchor=north,
+            yshift=-0.9cm,
+            font=\scriptsize,
+        ] at (dirmap.south) {%
+            \setlength{\tabcolsep}{8pt}%
+            \begin{tabular}{@{}lcccccc@{}}
+                \toprule
+                Direction & $+x$ & $-x$ & $+y$ & $-y$ & $+z$ & $-z$ \\
+                \midrule
+                Azimuth   & $0^\circ$ & $\pm180^\circ$ & $90^\circ$ & $-90^\circ$ & $0^\circ$ & $0^\circ$ \\
+                Elevation & $0^\circ$ & $0^\circ$      & $0^\circ$  & $0^\circ$   & $+90^\circ$ & $-90^\circ$ \\
+                \bottomrule
+            \end{tabular}%
+        };
+
+    \end{tikzpicture}
+\end{figure}
+
+\end{document}
