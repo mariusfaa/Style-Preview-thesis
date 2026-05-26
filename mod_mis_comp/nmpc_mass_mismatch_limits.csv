@@ -1,0 +1,2 @@
+controller,nominal_mass_kg,min_multiplier,max_multiplier,min_mass_kg,max_mass_kg
+NMPC,0.06,0.171999999999999,2.99999999999978,0.01032,0.179999999999987
