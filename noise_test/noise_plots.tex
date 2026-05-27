@@ -1,0 +1,432 @@
+% !TEX program = pdflatex
+\documentclass[a4paper, 11pt]{article}
+\usepackage[top=1.5cm, bottom=2.0cm, left=1.2cm, right=1.2cm]{geometry}
+\usepackage{tikz, pgfplots, pgfplotstable}
+\usepackage{etoolbox}
+\usepgfplotslibrary{groupplots, fillbetween, colormaps}
+\pgfplotsset{compat=1.17}
+
+% ====================================================================
+% PLOT THEME SELECTOR -- change this single line to switch palettes:
+%   okabe        Okabe-Ito + line-style redundancy   (best all-rounder)
+%   okabe-solid  Okabe-Ito, all solid                (cleanest, color only)
+%   tol-bright   Paul Tol bright                     (vivid, high contrast)
+%   tol-muted    Paul Tol muted                      (soft, journal-style)
+%   grayscale    Original B/W with line-width coding (no color at all)
+% ====================================================================
+\newcommand{\plottheme}{okabe} % <-- CHANGE THIS VALUE TO SWITCH THEMES
+
+% --- Spelling aliases ---
+\ifdefstring{\plottheme}{greyscale}{\renewcommand{\plottheme}{grayscale}}{}
+\ifdefstring{\plottheme}{gray}{\renewcommand{\plottheme}{grayscale}}{}
+\ifdefstring{\plottheme}{grey}{\renewcommand{\plottheme}{grayscale}}{}
+
+% --- THEME: okabe (Okabe-Ito, double-encoded) ---
+\ifdefstring{\plottheme}{okabe}{%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        cmapStyle/.style={colormap/viridis}
+    }
+}{}
+
+% --- THEME: okabe-solid (Okabe-Ito, all solid) ---
+\ifdefstring{\plottheme}{okabe-solid}{%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid, line width=1.2pt},
+        style2/.style={c2, solid, line width=1.2pt},
+        style3/.style={c3, solid, line width=1.2pt},
+        style4/.style={c4, solid, line width=1.2pt},
+        styleAux/.style={cAux, solid, line width=1.0pt},
+        cmapStyle/.style={colormap/viridis}
+    }
+}{}
+
+% --- THEME: tol-bright (Paul Tol bright) ---
+\ifdefstring{\plottheme}{tol-bright}{%
+    \definecolor{c1}{HTML}{4477AA}\definecolor{c2}{HTML}{EE6677}%
+    \definecolor{c3}{HTML}{228833}\definecolor{c4}{HTML}{CCBB44}%
+    \definecolor{cAux}{HTML}{66CCEE}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        cmapStyle/.style={colormap/viridis}
+    }
+}{}
+
+% --- THEME: tol-muted (Paul Tol muted) ---
+\ifdefstring{\plottheme}{tol-muted}{%
+    \definecolor{c1}{HTML}{332288}\definecolor{c2}{HTML}{CC6677}%
+    \definecolor{c3}{HTML}{44AA99}\definecolor{c4}{HTML}{DDCC77}%
+    \definecolor{cAux}{HTML}{88CCEE}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        cmapStyle/.style={colormap/viridis}
+    }
+}{}
+
+% --- THEME: grayscale (original) ---
+\ifdefstring{\plottheme}{grayscale}{%
+    \colorlet{c1}{black!30}\colorlet{c2}{black!60}%
+    \colorlet{c3}{black}\colorlet{c4}{black!80}%
+    \colorlet{cAux}{black!50}%
+    \pgfplotsset{
+        styleRef/.style={black!50, solid, line width=1.0pt},
+        style1/.style={c1, solid,          line width=3.0pt},
+        style2/.style={c2, solid,          line width=1.5pt},
+        style3/.style={c3, solid,          line width=0.6pt},
+        style4/.style={c4, densely dotted, line width=1.5pt},
+        styleAux/.style={cAux, solid,      line width=0.6pt},
+        cmapStyle/.style={colormap/blackwhite}
+    }
+}{}
+
+% --- Fallback ---
+\ifboolexpr{%
+    test {\ifdefstring{\plottheme}{okabe}}
+    or test {\ifdefstring{\plottheme}{okabe-solid}}
+    or test {\ifdefstring{\plottheme}{tol-bright}}
+    or test {\ifdefstring{\plottheme}{tol-muted}}
+    or test {\ifdefstring{\plottheme}{grayscale}}
+}{}{%
+    \GenericWarning{}{%
+        Plot theme '\plottheme' not recognized.
+        Valid options: okabe, okabe-solid, tol-bright, tol-muted, grayscale.
+        Falling back to 'okabe'%
+    }%
+    \definecolor{c1}{HTML}{0072B2}\definecolor{c2}{HTML}{D55E00}%
+    \definecolor{c3}{HTML}{009E73}\definecolor{c4}{HTML}{E69F00}%
+    \definecolor{cAux}{HTML}{56B4E9}%
+    \pgfplotsset{
+        styleRef/.style={black!70, densely dashed, line width=0.8pt},
+        style1/.style={c1, solid,          line width=1.2pt},
+        style2/.style={c2, dashed,         line width=1.2pt},
+        style3/.style={c3, solid,          line width=1.2pt},
+        style4/.style={c4, densely dotted, line width=1.4pt},
+        styleAux/.style={cAux, solid,      line width=1.0pt},
+        cmapStyle/.style={colormap/viridis}
+    }%
+}
+
+% --- Scalars from meta_scalars.csv / meta_factors.csv (hard-coded here) ---
+\newcommand{\yRmsBase}{3.95065119548141e-12}
+\newcommand{\sigmaThrPos}{9.30572040929699e-05}
+\newcommand{\sigmaThrOri}{0.000486967525165863}
+\newcommand{\sigmaThrVel}{0.00523299114681495}
+% sigma_thr_p50 for sigma_ang is NaN -- no vertical line drawn
+
+% --- Row-filter styles: keep only rows where a given CSV column equals N ---
+% Implemented via x filter (sets x to nan for non-matching rows, which are
+% then dropped by unbounded coords=discard).
+\pgfplotsset{
+    ofatfactor/.style={
+        x filter/.expression={\thisrow{factor}==#1 ? \pgfmathresult : nan}
+    },
+    rsmpair/.style={
+        x filter/.expression={\thisrow{pair_id}==#1 ? \pgfmathresult : nan}
+    }
+}
+
+% --- Per-factor x ranges (so the secondary axis overlay can match exactly) ---
+% sigma values per factor come from ofat_summary.csv (level 1 .. level 9).
+\newcommand{\panelW}{0.42\textwidth}
+\newcommand{\panelH}{4.8cm}
+
+\begin{document}
+\thispagestyle{empty}
+
+% ====================================================================
+% FIGURE 1: OFAT sensitivity (one panel per noise factor)
+% Matches MATLAB: log-log y_rms (median solid + p25/p75 dotted) on left,
+% linear P(diverged) on right yyaxis, dashed-black threshold line.
+% ====================================================================
+\begin{figure}[p]
+    \centering
+    \large\bfseries Per-factor noise sensitivity \par
+    {\footnotesize\itshape $y_{\mathrm{rms}}$: weighted RMS of state tracking error over the last 50\% of each run; replicates per noise level: 3.\par}
+    \vspace{0.4cm}
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group name=ofatplots,
+                group size=2 by 2,
+                horizontal sep=2.6cm,
+                vertical sep=2.6cm,
+            },
+            width=\panelW, height=\panelH,
+            grid=major,
+            xmode=log, ymode=log,
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            title style={font=\footnotesize, yshift=-2pt},
+            table/col sep=comma,
+            unbounded coords=discard,
+            axis y line*=left,
+            axis x line*=bottom,
+        ]
+
+        % -------- Panel 1: sigma_pos --------
+        \nextgroupplot[
+            title={Position noise},
+            xlabel={$\sigma_{\mathrm{pos}}$ [m]},
+            ylabel={$y_{\mathrm{rms}}$ [m]},
+            xmin=1e-6, xmax=1e-3,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=1]
+                table[x=sigma, y=y_rms_median] {ofat_summary.csv};
+            \addplot[style1, densely dotted, ofatfactor=1]
+                table[x=sigma, y=y_rms_p25] {ofat_summary.csv};
+            \addplot[style1, densely dotted, ofatfactor=1]
+                table[x=sigma, y=y_rms_p75] {ofat_summary.csv};
+            \draw[black, densely dashed, line width=0.8pt]
+                ({axis cs:\sigmaThrPos,0}|-{rel axis cs:0,0})
+                -- ({axis cs:\sigmaThrPos,0}|-{rel axis cs:0,1});
+
+        % -------- Panel 2: sigma_ori --------
+        \nextgroupplot[
+            title={Orientation noise},
+            xlabel={$\sigma_{\mathrm{ori}}$ [rad]},
+            ylabel={$y_{\mathrm{rms}}$ [m]},
+            xmin=1e-5, xmax=1e-2,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=2]
+                table[x=sigma, y=y_rms_median] {ofat_summary.csv};
+            \addplot[style1, densely dotted, ofatfactor=2]
+                table[x=sigma, y=y_rms_p25] {ofat_summary.csv};
+            \addplot[style1, densely dotted, ofatfactor=2]
+                table[x=sigma, y=y_rms_p75] {ofat_summary.csv};
+            \draw[black, densely dashed, line width=0.8pt]
+                ({axis cs:\sigmaThrOri,0}|-{rel axis cs:0,0})
+                -- ({axis cs:\sigmaThrOri,0}|-{rel axis cs:0,1});
+
+        % -------- Panel 3: sigma_vel --------
+        \nextgroupplot[
+            title={Linear velocity noise},
+            xlabel={$\sigma_{\mathrm{vel}}$ [m/s]},
+            ylabel={$y_{\mathrm{rms}}$ [m]},
+            xmin=1e-5, xmax=1e-2,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=3]
+                table[x=sigma, y=y_rms_median] {ofat_summary.csv};
+            \addplot[style1, densely dotted, ofatfactor=3]
+                table[x=sigma, y=y_rms_p25] {ofat_summary.csv};
+            \addplot[style1, densely dotted, ofatfactor=3]
+                table[x=sigma, y=y_rms_p75] {ofat_summary.csv};
+            \draw[black, densely dashed, line width=0.8pt]
+                ({axis cs:\sigmaThrVel,0}|-{rel axis cs:0,0})
+                -- ({axis cs:\sigmaThrVel,0}|-{rel axis cs:0,1});
+
+        % -------- Panel 4: sigma_ang (no threshold line: NaN) --------
+        \nextgroupplot[
+            title={Angular velocity noise},
+            xlabel={$\sigma_{\mathrm{ang}}$ [rad/s]},
+            ylabel={$y_{\mathrm{rms}}$ [m]},
+            xmin=1e-4, xmax=1e-1,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=4]
+                table[x=sigma, y=y_rms_median] {ofat_summary.csv};
+            \addplot[style1, densely dotted, ofatfactor=4]
+                table[x=sigma, y=y_rms_p25] {ofat_summary.csv};
+            \addplot[style1, densely dotted, ofatfactor=4]
+                table[x=sigma, y=y_rms_p75] {ofat_summary.csv};
+
+        \end{groupplot}
+
+        % --- 4x SECONDARY AXES: P(diverged) on right y, linear, [0,1] ---
+        % One overlay per panel, anchored to the south-west of that panel.
+        % Options inlined because a \pgfplotsset{.../.style=...} style applied
+        % via [ofatRight,...] gets resolved against /tikz/ here, not /pgfplots/.
+        \begin{axis}[
+            at={(ofatplots c1r1.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-6, xmax=1e-3, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=1]
+                table[x=sigma, y=p_diverged] {ofat_summary.csv};
+        \end{axis}
+        \begin{axis}[
+            at={(ofatplots c2r1.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-5, xmax=1e-2, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=2]
+                table[x=sigma, y=p_diverged] {ofat_summary.csv};
+        \end{axis}
+        \begin{axis}[
+            at={(ofatplots c1r2.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-5, xmax=1e-2, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=3]
+                table[x=sigma, y=p_diverged] {ofat_summary.csv};
+        \end{axis}
+        \begin{axis}[
+            at={(ofatplots c2r2.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-4, xmax=1e-1, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=4]
+                table[x=sigma, y=p_diverged] {ofat_summary.csv};
+        \end{axis}
+
+        % --- Shared legend below the bottom row of panels ---
+        \node[anchor=north, font=\footnotesize, align=center,
+              text width=0.95\textwidth]
+            at ([yshift=-1.4cm]$(ofatplots c1r2.south)!0.5!(ofatplots c2r2.south)$)
+            {%
+            \tikz[baseline=-0.5ex]{\draw[c1, line width=1.1pt] (0,0) -- (5mm,0);
+                \fill[c1] (2.5mm,0) circle (0.7pt);}\,median $y_{\mathrm{rms}}$
+            \hspace{0.6em}
+            \tikz[baseline=-0.5ex]{\draw[c1, densely dotted, line width=1.0pt] (0,0) -- (5mm,0);}\,25--75\% percentile
+            \hspace{0.6em}
+            \tikz[baseline=-0.5ex]{\draw[black, densely dashed, line width=0.8pt] (0,0) -- (5mm,0);}\,50\% divergence threshold
+            \hspace{0.6em}
+            \tikz[baseline=-0.5ex]{\draw[c2, line width=1.1pt] (0,0) -- (5mm,0);
+                \fill[c2] (2mm,-0.7pt) rectangle ++(1.4pt,1.4pt);}\,$P_{\mathrm{div}}$ on right axis
+            };
+
+    \end{tikzpicture}
+\end{figure}
+
+% ====================================================================
+% FIGURE 2: RSM filled contours of log10(y_rms), one panel per factor pair.
+% The 14 colored band polygons per panel are pre-computed in MATLAB by
+% export_contour_polygons.m (bwboundaries of the 15-level contourf bands,
+% with parula RGB embedded in the \fill color). They are emitted as
+% rsm_contour_polys_pair{1..6}.tex and \input here so this file stays
+% pdflatex-only (no contour computation done in TeX).
+% ====================================================================
+\begin{figure}[p]
+    \centering
+    \large\bfseries Response surface contours: $\log_{10}(y_{\mathrm{rms}})$ \par
+    {\footnotesize\itshape Quadratic RSM fit; each panel scans two factors over $[-1,+1]$ with the other two held at coded $0$.\par}
+    \vspace{0.4cm}
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group name=rsmplots,
+                group size=3 by 2,
+                horizontal sep=2.4cm,
+                vertical sep=2.2cm,
+            },
+            width=0.24\textwidth, height=4.8cm,
+            xmin=-1, xmax=1, ymin=-1, ymax=1,
+            xtick={-1,-0.5,0,0.5,1}, ytick={-1,-0.5,0,0.5,1},
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            title style={font=\footnotesize, yshift=-2pt},
+            table/col sep=comma,
+            axis on top, % keep ticks/scatter above the colored polygons
+        ]
+
+        % -------- Pair 1: sigma_pos vs sigma_ori --------
+        \nextgroupplot[title={$\sigma_{\mathrm{pos}}$ vs $\sigma_{\mathrm{ori}}$},
+            xlabel={$f_{\mathrm{pos}}$}, ylabel={$f_{\mathrm{ori}}$}]
+            \input{rsm_contour_polys_pair1.tex}
+            \addplot[only marks, mark=*, mark size=1.6pt,
+                     mark options={fill=white, draw=black, line width=0.5pt}]
+                table[x=f1, y=f2] {rsm_runs.csv};
+
+        % -------- Pair 2: sigma_pos vs sigma_vel --------
+        \nextgroupplot[title={$\sigma_{\mathrm{pos}}$ vs $\sigma_{\mathrm{vel}}$},
+            xlabel={$f_{\mathrm{pos}}$}, ylabel={$f_{\mathrm{vel}}$}]
+            \input{rsm_contour_polys_pair2.tex}
+            \addplot[only marks, mark=*, mark size=1.6pt,
+                     mark options={fill=white, draw=black, line width=0.5pt}]
+                table[x=f1, y=f3] {rsm_runs.csv};
+
+        % -------- Pair 3: sigma_pos vs sigma_ang --------
+        \nextgroupplot[title={$\sigma_{\mathrm{pos}}$ vs $\sigma_{\mathrm{ang}}$},
+            xlabel={$f_{\mathrm{pos}}$}, ylabel={$f_{\mathrm{ang}}$}]
+            \input{rsm_contour_polys_pair3.tex}
+            \addplot[only marks, mark=*, mark size=1.6pt,
+                     mark options={fill=white, draw=black, line width=0.5pt}]
+                table[x=f1, y=f4] {rsm_runs.csv};
+
+        % -------- Pair 4: sigma_ori vs sigma_vel --------
+        \nextgroupplot[title={$\sigma_{\mathrm{ori}}$ vs $\sigma_{\mathrm{vel}}$},
+            xlabel={$f_{\mathrm{ori}}$}, ylabel={$f_{\mathrm{vel}}$}]
+            \input{rsm_contour_polys_pair4.tex}
+            \addplot[only marks, mark=*, mark size=1.6pt,
+                     mark options={fill=white, draw=black, line width=0.5pt}]
+                table[x=f2, y=f3] {rsm_runs.csv};
+
+        % -------- Pair 5: sigma_ori vs sigma_ang --------
+        \nextgroupplot[title={$\sigma_{\mathrm{ori}}$ vs $\sigma_{\mathrm{ang}}$},
+            xlabel={$f_{\mathrm{ori}}$}, ylabel={$f_{\mathrm{ang}}$}]
+            \input{rsm_contour_polys_pair5.tex}
+            \addplot[only marks, mark=*, mark size=1.6pt,
+                     mark options={fill=white, draw=black, line width=0.5pt}]
+                table[x=f2, y=f4] {rsm_runs.csv};
+
+        % -------- Pair 6: sigma_vel vs sigma_ang --------
+        \nextgroupplot[title={$\sigma_{\mathrm{vel}}$ vs $\sigma_{\mathrm{ang}}$},
+            xlabel={$f_{\mathrm{vel}}$}, ylabel={$f_{\mathrm{ang}}$}]
+            \input{rsm_contour_polys_pair6.tex}
+            \addplot[only marks, mark=*, mark size=1.6pt,
+                     mark options={fill=white, draw=black, line width=0.5pt}]
+                table[x=f3, y=f4] {rsm_runs.csv};
+
+        \end{groupplot}
+
+        % --- Per-panel colorbars (MATLAB-generated, one per pair) ---
+        \input{rsm_contour_cbar_pair1.tex}
+        \input{rsm_contour_cbar_pair2.tex}
+        \input{rsm_contour_cbar_pair3.tex}
+        \input{rsm_contour_cbar_pair4.tex}
+        \input{rsm_contour_cbar_pair5.tex}
+        \input{rsm_contour_cbar_pair6.tex}
+
+        % --- Explanatory note below the panels ---
+        \node[anchor=north, font=\footnotesize, align=center,
+              text width=0.95\textwidth]
+            at ([yshift=-1.4cm]$(rsmplots c1r2.south)!0.5!(rsmplots c3r2.south)$)
+            {%
+            $f_i$ is the coded noise level (Box--Behnken design);
+            $\sigma_i = 10^{\,\mathrm{logc}_i + 0.5\,f_i}$ with $\mathrm{logc}=(-4.5,-3.5,-3.5,-2.5)$,
+            so each coded unit scales $\sigma$ by $\sqrt{10}\approx 3.16\times$.\quad
+            \tikz[baseline=-0.4ex]{
+                \draw[fill=white, draw=black, line width=0.5pt] (0,0) circle (1.4pt);
+            }\,Box--Behnken design points (projected onto each pair).
+            };
+
+    \end{tikzpicture}
+\end{figure}
+
+\end{document}

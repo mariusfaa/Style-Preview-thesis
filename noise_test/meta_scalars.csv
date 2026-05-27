@@ -1,0 +1,5 @@
+name,value
+y_rms_base,3.95065119548141e-12
+step_per_unit,0.5
+n_replicates,3
+sim_steps,1500

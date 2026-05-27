@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pdflatex -interaction=nonstopmode -halt-on-error noise_plots.tex)",
+      "PowerShell($src = \"c:\\\\Users\\\\mariujf\\\\Style-Preview-thesis\\\\noise_test\\\\rsm_contour_grid.csv\"; $rows = Import-Csv $src; $header = \"fa_coded,fb_coded,log10_y_rms\"; foreach \\($pid in 1..6\\) { $out = \"c:\\\\Users\\\\mariujf\\\\Style-Preview-thesis\\\\noise_test\\\\rsm_contour_grid_pair$pid.csv\"; $lines = @\\($header\\) + \\($rows | Where-Object { [int]$_.pair_id -eq $pid } | ForEach-Object { \"$\\($_.fa_coded\\),$\\($_.fb_coded\\),$\\($_.log10_y_rms\\)\" }\\); Set-Content -Path $out -Value $lines -Encoding ascii; \"Wrote $out \\($\\($lines.Count - 1\\) rows\\)\" })",
+      "PowerShell($src = \"c:\\\\Users\\\\mariujf\\\\Style-Preview-thesis\\\\noise_test\\\\rsm_contour_grid.csv\"; $rows = Import-Csv $src; $header = \"fa_coded,fb_coded,log10_y_rms\"; foreach \\($p in 1..6\\) { $out = \"c:\\\\Users\\\\mariujf\\\\Style-Preview-thesis\\\\noise_test\\\\rsm_contour_grid_pair$p.csv\"; $lines = @\\($header\\) + \\($rows | Where-Object { [int]$_.pair_id -eq $p } | ForEach-Object { \"$\\($_.fa_coded\\),$\\($_.fb_coded\\),$\\($_.log10_y_rms\\)\" }\\); Set-Content -Path $out -Value $lines -Encoding ascii; \"Wrote $out \\($\\($lines.Count - 1\\) rows\\)\" })"
+    ]
+  }
+}
