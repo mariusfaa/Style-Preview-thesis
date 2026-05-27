@@ -140,20 +140,15 @@
     \pgfplotsset{colormap/viridis}%
 }
 
-% --- Load metadata so axis ranges / labels are data-driven ---
-\pgfplotstableread[col sep=comma]{meta.csv}\metatable
-\pgfplotstablegetelem{0}{value}\of\metatable \let\searchlimit\pgfplotsretval
-\pgfplotstablegetelem{1}{value}\of\metatable \let\controllername\pgfplotsretval
-\pgfplotstablegetelem{2}{value}\of\metatable \let\numdirs\pgfplotsretval
-\pgfplotstablegetelem{3}{value}\of\metatable \let\critmin\pgfplotsretval
-\pgfplotstablegetelem{4}{value}\of\metatable \let\critmax\pgfplotsretval
-
-% --- Load bar table to extract pole values (row 48 = top pole, row 49 = bottom pole) ---
-\pgfplotstableread[col sep=comma]{impulse_bars.csv}\barstable
-\pgfplotstablegetelem{48}{recoverable}\of\barstable  \let\poletoprec\pgfplotsretval
-\pgfplotstablegetelem{48}{first_failure}\of\barstable \let\poletopp\pgfplotsretval
-\pgfplotstablegetelem{49}{recoverable}\of\barstable  \let\polebotrec\pgfplotsretval
-\pgfplotstablegetelem{49}{first_failure}\of\barstable \let\polebotff\pgfplotsretval
+% ====================================================================
+% CONTROLLERS
+% Each subfolder holds a full CSV set (meta.csv, meridian.csv,
+% spider_*.csv, impulse_directions.csv) for one controller run.
+% The document renders one full page per controller via
+% \renderboundary{<folder>} (defined below; called at end of file).
+% Add/remove controllers by editing the call list -- known folders get
+% a pretty title, unknown ones fall back to the raw folder name.
+% ====================================================================
 
 % --- Spider chart shared style ---
 \pgfplotsset{
@@ -162,8 +157,8 @@
         xtick={0,22.5,45,...,337.5},
         xticklabels={$+x$,,,,{$+y$},,,,{$-x$},,,,{$-y$},,,,},
         xticklabel style={font=\tiny},
-        ytick={0.01,0.02,0.03,0.04,0.05},
-        yticklabel style={font=\tiny},
+        ytick={0.03,0.04,0.05},
+        yticklabel style={font=\tiny, xshift=4pt},
         ymin=0, ymax=0.05,
         tick label style={font=\tiny},
         grid=major,
@@ -172,12 +167,36 @@
     }
 }
 
-\begin{document}
-\thispagestyle{empty}
-
-\begin{figure}[p]
-    \centering
-    \large\bfseries Impulse Robustness Boundary (\controllername{} Controller)\par
+% ====================================================================
+% \renderboundary{<folder>} -- one full page for one controller.
+% Reads that folder's CSVs (data-driven), then draws the spider rings
+% and the 3D scatter with the two +-z poles highlighted + labelled.
+% ====================================================================
+\newcommand{\renderboundary}[1]{%
+    \def\controllerdir{#1}%
+    \def\controllertitle{#1}% raw-folder fallback
+    \ifdefstring{\controllerdir}{NMPC_200Hz}{\def\controllertitle{NMPC (200\,Hz)}}{}%
+    \ifdefstring{\controllerdir}{RL_1000Hz}{\def\controllertitle{RL (1000\,Hz)}}{}%
+    \ifdefstring{\controllerdir}{RL_100Hz}{\def\controllertitle{RL (100\,Hz)}}{}%
+    % data-driven metadata (axis ranges, color limits)
+    \pgfplotstableread[col sep=comma]{\controllerdir/meta.csv}\metatable
+    \pgfplotstablegetelem{0}{value}\of\metatable \let\searchlimit\pgfplotsretval
+    \pgfplotstablegetelem{1}{value}\of\metatable \let\controllername\pgfplotsretval
+    \pgfplotstablegetelem{2}{value}\of\metatable \let\numdirs\pgfplotsretval
+    \pgfplotstablegetelem{3}{value}\of\metatable \let\critmin\pgfplotsretval
+    \pgfplotstablegetelem{4}{value}\of\metatable \let\critmax\pgfplotsretval
+    % pole values: meridian.csv row 0 = bottom (-90 deg), last row = top (+90 deg)
+    \pgfplotstableread[col sep=comma]{\controllerdir/meridian.csv}\mertable
+    \pgfplotstablegetrowsof{\mertable}%
+    \pgfmathtruncatemacro{\merlast}{\pgfplotsretval-1}%
+    \pgfplotstablegetelem{0}{rec_mean}\of\mertable        \let\polebotrec\pgfplotsretval
+    \pgfplotstablegetelem{0}{ff_mean}\of\mertable         \let\polebotff\pgfplotsretval
+    \pgfplotstablegetelem{\merlast}{rec_mean}\of\mertable \let\poletoprec\pgfplotsretval
+    \pgfplotstablegetelem{\merlast}{ff_mean}\of\mertable  \let\poletopff\pgfplotsretval
+    %
+    \vspace*{\fill}%
+    \begin{center}
+    {\large\bfseries Impulse Robustness Boundary \textemdash{} \controllertitle{} Controller\par}
     \vspace{0.4cm}
 
     \begin{tikzpicture}
@@ -195,9 +214,9 @@
             title={Elevation $\approx{-27}^\circ$},
         ]
             \addplot[fill=c1!25, draw=c1, line width=0.9pt]
-                table[x=azimuth, y=recoverable]{spider_lower.csv};
+                table[x=azimuth, y=recoverable]{\controllerdir/spider_lower.csv};
             \addplot[draw=c2, dashed, line width=0.9pt]
-                table[x=azimuth, y=first_failure]{spider_lower.csv};
+                table[x=azimuth, y=first_failure]{\controllerdir/spider_lower.csv};
         \end{polaraxis}
 
         \begin{polaraxis}[
@@ -214,10 +233,10 @@
             },
         ]
             \addplot[fill=c1!25, draw=c1, line width=0.9pt, area legend]
-                table[x=azimuth, y=recoverable]{spider_eq.csv};
+                table[x=azimuth, y=recoverable]{\controllerdir/spider_eq.csv};
             \addlegendentry{recoverable lower bound}
             \addplot[draw=c2, dashed, line width=0.9pt]
-                table[x=azimuth, y=first_failure]{spider_eq.csv};
+                table[x=azimuth, y=first_failure]{\controllerdir/spider_eq.csv};
             \addlegendentry{first failing upper bound}
         \end{polaraxis}
 
@@ -228,42 +247,21 @@
             title={Elevation $\approx{+27}^\circ$},
         ]
             \addplot[fill=c1!25, draw=c1, line width=0.9pt]
-                table[x=azimuth, y=recoverable]{spider_high.csv};
+                table[x=azimuth, y=recoverable]{\controllerdir/spider_high.csv};
             \addplot[draw=c2, dashed, line width=0.9pt]
-                table[x=azimuth, y=first_failure]{spider_high.csv};
+                table[x=azimuth, y=first_failure]{\controllerdir/spider_high.csv};
         \end{polaraxis}
 
         % ============================================================
-        % POLE ANNOTATIONS (elevation = ±90°, single directions)
-        % ============================================================
-
-        \node[
-            anchor=north, align=center, font=\footnotesize,
-            draw=black!35, fill=white, rounded corners=3pt, inner sep=5pt,
-            text width=4.8cm,
-        ] at (2.5cm,-6.4cm) {%
-            \textbf{Bottom pole} ($-z$, elev.\ $={-90}^\circ$)\\[2pt]
-            Recoverable:~~\polebotrec\,m/s\\
-            First failure:~\polebotff\,m/s%
-        };
-
-        \node[
-            anchor=north, align=center, font=\footnotesize,
-            draw=black!35, fill=white, rounded corners=3pt, inner sep=5pt,
-            text width=4.8cm,
-        ] at (15.3cm,-6.4cm) {%
-            \textbf{Top pole} ($+z$, elev.\ $={+90}^\circ$)\\[2pt]
-            Recoverable:~~\poletoprec\,m/s\\
-            First failure:~\poletopp\,m/s%
-        };
-
-        % ============================================================
-        % 3D SCATTER: recoverable boundary by direction (unchanged)
+        % 3D SCATTER: recoverable boundary by direction.
+        % The two poles (+-z) are single directions with no azimuth, so
+        % they are absent from the spider rings; here they are the top and
+        % bottom points of the cloud, highlighted and labelled below.
         % ============================================================
         \begin{axis}[
             name=scatter3d,
-            at={(9.3cm,-9.2cm)}, anchor=north,
-            width=0.65\textwidth, height=12cm,
+            at={(9.0cm,-6.6cm)}, anchor=north,
+            width=0.62\textwidth, height=12.5cm,
             view={45}{25},
             title={Recoverable Boundary by Direction},
             title style={font=\small\bfseries},
@@ -294,10 +292,36 @@
                 scatter src=explicit,
                 mark=*,
                 mark size=2.2pt,
-            ] table[x=dx, y=dy, z=dz, meta=critical]{impulse_directions.csv};
+            ] table[x=dx, y=dy, z=dz, meta=critical]{\controllerdir/impulse_directions.csv};
+
+            % --- Highlight the two poles (the +-z directions) ---
+            % Black ring drawn over the coloured pole markers, with a
+            % labelled recoverable value (data-driven, see \poletoprec etc.).
+            \addplot3[only marks, mark=o, mark size=4.5pt, draw=black,
+                      line width=0.8pt, forget plot]
+                coordinates {(0,0,1) (0,0,-1)};
+            \node[anchor=south, align=center, font=\scriptsize,
+                  fill=white, fill opacity=0.78, text opacity=1, inner sep=1.5pt,
+                  rounded corners=1.5pt]
+                at (axis cs:0,0,1.1)
+                {$+z$ pole\\\pgfmathprintnumber[fixed,precision=3]{\poletoprec}\,m/s};
+            \node[anchor=north, align=center, font=\scriptsize,
+                  fill=white, fill opacity=0.78, text opacity=1, inner sep=1.5pt,
+                  rounded corners=1.5pt]
+                at (axis cs:0,0,-1.1)
+                {$-z$ pole\\\pgfmathprintnumber[fixed,precision=3]{\polebotrec}\,m/s};
         \end{axis}
 
     \end{tikzpicture}
-\end{figure}
+    \end{center}
+    \vspace*{\fill}%
+}
+
+\begin{document}
+\pagestyle{empty}
+
+\renderboundary{NMPC_200Hz}\clearpage
+\renderboundary{RL_1000Hz}\clearpage
+\renderboundary{RL_100Hz}
 
 \end{document}

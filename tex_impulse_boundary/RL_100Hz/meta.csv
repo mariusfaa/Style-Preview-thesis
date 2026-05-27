@@ -1,0 +1,6 @@
+key,value
+search_limit,2
+controller,NN
+num_directions,50
+critical_min,0.0225
+critical_max,0.04
