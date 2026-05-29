@@ -114,83 +114,121 @@
 }
 
 % ====================================================================
-% Convenience: per-controller mass multipliers shown in legends
+% Convenience: controllers are the LINES; mass cases are the COLUMNS.
+% min / max = lightest / heaviest mass each controller tolerates
+% before divergence (per-controller robustness limits, NOT a shared mass).
+% Only the nominal column (1.00x) is a same-mass comparison.
 % ====================================================================
-\newcommand{\mNmpcMin}{0.17x}
-\newcommand{\mNmpcNom}{1.00x}
-\newcommand{\mNmpcMax}{3.00x}
-\newcommand{\mRlMin}{0.75x}
-\newcommand{\mRlNom}{1.00x}
-\newcommand{\mRlMax}{1.15x}
+% Post-processed CSVs (cols: time_ms, z_mm, horiz_offset_mm, tilt_mag_deg)
+\newcommand{\nmpcMin}{mismatch_nmpc_min.csv}
+\newcommand{\nmpcNom}{mismatch_nmpc_nom.csv}
+\newcommand{\nmpcMax}{mismatch_nmpc_max.csv}
+\newcommand{\rlMin}{mismatch_rl_min.csv}
+\newcommand{\rlNom}{mismatch_rl_nom.csv}
+\newcommand{\rlMax}{mismatch_rl_max.csv}
+% Raw-state CSVs for the 1 kHz controller (Time[s], x,y,z[m], alpha,beta[rad])
+\newcommand{\hfMin}{mismatch_data_HF_1000Hz_1_min_0.100x.csv}
+\newcommand{\hfNom}{mismatch_data_HF_1000Hz_1_nom_1.000x.csv}
+\newcommand{\hfMax}{mismatch_data_HF_1000Hz_1_max_1.586x.csv}
+
+% Inline conversions for the raw 1 kHz schema -> same units as the others
+\newcommand{\hfZ}[1]{\addplot[style3] table[x expr=\thisrow{Time}*1000, y expr=\thisrow{z}*1000] {#1}}
+\newcommand{\hfHoriz}[1]{\addplot[style3] table[x expr=\thisrow{Time}*1000, y expr=sqrt(\thisrow{x}^2+\thisrow{y}^2)*1000] {#1}}
+\newcommand{\hfTilt}[1]{\addplot[style3] table[x expr=\thisrow{Time}*1000, y expr=deg(sqrt(\thisrow{alpha}^2+\thisrow{beta}^2))] {#1}}
 
 \begin{document}
 \thispagestyle{empty}
 
 \begin{figure}[p]
     \centering
-    \large\bfseries Mass Mismatch Robustness: NMPC vs.\ RL \par
-    \normalsize\mdseries Tested mass multipliers --- NMPC: \mNmpcMin/\mNmpcNom/\mNmpcMax\ \quad RL: \mRlMin/\mRlNom/\mRlMax\par
-    \vspace{0.5cm}
+    \large\bfseries Mass Mismatch Robustness: NMPC vs.\ RL (100\,Hz vs.\ 1\,kHz) \par
+    \normalsize\mdseries Columns = mass at the divergence limit (per controller).
+    NMPC: 0.17/1.00/3.00$\times$\quad RL (100\,Hz): 0.75/1.00/1.15$\times$\quad RL (1\,kHz): 0.10/1.00/1.586$\times$\par
+    \vspace{0.4cm}
     \begin{tikzpicture}
         \begin{groupplot}[
             group style={
                 group name=mmplots,
-                group size=2 by 3,
-                horizontal sep=2.2cm,
-                vertical sep=3.5cm,
+                group size=3 by 3,
+                horizontal sep=1.5cm,
+                vertical sep=1.7cm,
             },
-            width=0.45\textwidth, height=5.5cm,
+            width=0.28\textwidth, height=4.6cm,
             grid=major,
             xmin=0, xmax=2000,
             tick label style={font=\scriptsize},
             label style={font=\footnotesize},
-            xlabel={Time [ms]},
+            title style={font=\footnotesize\bfseries},
             table/col sep=comma,
-            legend style={font=\tiny, at={(1,1)}, anchor=north east, fill opacity=0.8}
         ]
 
         % ============================================================
         % ROW 1: vertical position z (the controlled height)
+        % z_eq reference (dashed) shown in every column.
+        % Legend is collected once (top-left plot) and drawn below.
         % ============================================================
-        \nextgroupplot[title={NMPC --- z position}, ylabel={z [mm]}]
-            \addplot[styleRef] table[x=time_ms, y expr=30.119179] {mismatch_nmpc_nom.csv}; \addlegendentry{z$_{eq}$}
-            \addplot[style1]   table[x=time_ms, y=z_mm] {mismatch_nmpc_min.csv}; \addlegendentry{min (\mNmpcMin)}
-            \addplot[style3]   table[x=time_ms, y=z_mm] {mismatch_nmpc_nom.csv}; \addlegendentry{nom (\mNmpcNom)}
-            \addplot[style2]   table[x=time_ms, y=z_mm] {mismatch_nmpc_max.csv}; \addlegendentry{max (\mNmpcMax)}
+        \nextgroupplot[title={Lightest mass tolerated}, ylabel={z [mm]},
+                       legend to name=mmlegend, legend columns=-1,
+                       legend style={font=\footnotesize, draw=black!30,
+                                     /tikz/every even column/.append style={column sep=0.4cm}}]
+            \addplot[style1] table[x=time_ms, y=z_mm] {\nmpcMin}; \addlegendentry{NMPC}
+            \addplot[style2] table[x=time_ms, y=z_mm] {\rlMin};   \addlegendentry{RL (100\,Hz)}
+            \hfZ{\hfMin};                                         \addlegendentry{RL (1\,kHz)}
+            \addplot[styleRef] table[x=time_ms, y expr=30.119179] {\nmpcNom}; \addlegendentry{z$_{eq}$}
 
-        \nextgroupplot[title={RL --- z position}, ylabel={z [mm]}]
-            \addplot[styleRef] table[x=time_ms, y expr=30.119179] {mismatch_rl_nom.csv}; \addlegendentry{z$_{eq}$}
-            \addplot[style1]   table[x=time_ms, y=z_mm] {mismatch_rl_min.csv}; \addlegendentry{min (\mRlMin)}
-            \addplot[style3]   table[x=time_ms, y=z_mm] {mismatch_rl_nom.csv}; \addlegendentry{nom (\mRlNom)}
-            \addplot[style2]   table[x=time_ms, y=z_mm] {mismatch_rl_max.csv}; \addlegendentry{max (\mRlMax)}
+        \nextgroupplot[title={Nominal mass (1.00$\times$)}]
+            \addplot[style1] table[x=time_ms, y=z_mm] {\nmpcNom};
+            \addplot[style2] table[x=time_ms, y=z_mm] {\rlNom};
+            \hfZ{\hfNom};
+            \addplot[styleRef] table[x=time_ms, y expr=30.119179] {\nmpcNom};
+
+        \nextgroupplot[title={Heaviest mass tolerated}]
+            \addplot[style1] table[x=time_ms, y=z_mm] {\nmpcMax};
+            \addplot[style2] table[x=time_ms, y=z_mm] {\rlMax};
+            \hfZ{\hfMax};
+            \addplot[styleRef] table[x=time_ms, y expr=30.119179] {\nmpcNom};
 
         % ============================================================
         % ROW 2: horizontal offset sqrt(x^2 + y^2) -- centre of mass
         % ============================================================
-        \nextgroupplot[title={NMPC --- horiz.\ offset $\sqrt{x^2+y^2}$}, ylabel={[mm]}]
-            \addplot[style1] table[x=time_ms, y=horiz_offset_mm] {mismatch_nmpc_min.csv};
-            \addplot[style3] table[x=time_ms, y=horiz_offset_mm] {mismatch_nmpc_nom.csv};
-            \addplot[style2] table[x=time_ms, y=horiz_offset_mm] {mismatch_nmpc_max.csv};
+        \nextgroupplot[ylabel={horiz.\ offset $\sqrt{x^2+y^2}$ [mm]}]
+            \addplot[style1] table[x=time_ms, y=horiz_offset_mm] {\nmpcMin};
+            \addplot[style2] table[x=time_ms, y=horiz_offset_mm] {\rlMin};
+            \hfHoriz{\hfMin};
 
-        \nextgroupplot[title={RL --- horiz.\ offset $\sqrt{x^2+y^2}$}, ylabel={[mm]}]
-            \addplot[style1] table[x=time_ms, y=horiz_offset_mm] {mismatch_rl_min.csv};
-            \addplot[style3] table[x=time_ms, y=horiz_offset_mm] {mismatch_rl_nom.csv};
-            \addplot[style2] table[x=time_ms, y=horiz_offset_mm] {mismatch_rl_max.csv};
+        \nextgroupplot
+            \addplot[style1] table[x=time_ms, y=horiz_offset_mm] {\nmpcNom};
+            \addplot[style2] table[x=time_ms, y=horiz_offset_mm] {\rlNom};
+            \hfHoriz{\hfNom};
+
+        \nextgroupplot
+            \addplot[style1] table[x=time_ms, y=horiz_offset_mm] {\nmpcMax};
+            \addplot[style2] table[x=time_ms, y=horiz_offset_mm] {\rlMax};
+            \hfHoriz{\hfMax};
 
         % ============================================================
         % ROW 3: tilt magnitude sqrt(alpha^2 + beta^2) -- wobble
         % ============================================================
-        \nextgroupplot[title={NMPC --- tilt magnitude $\sqrt{\alpha^2+\beta^2}$}, ylabel={[deg]}]
-            \addplot[style1] table[x=time_ms, y=tilt_mag_deg] {mismatch_nmpc_min.csv};
-            \addplot[style3] table[x=time_ms, y=tilt_mag_deg] {mismatch_nmpc_nom.csv};
-            \addplot[style2] table[x=time_ms, y=tilt_mag_deg] {mismatch_nmpc_max.csv};
+        \nextgroupplot[ylabel={tilt $\sqrt{\alpha^2+\beta^2}$ [deg]}, xlabel={Time [ms]}]
+            \addplot[style1] table[x=time_ms, y=tilt_mag_deg] {\nmpcMin};
+            \addplot[style2] table[x=time_ms, y=tilt_mag_deg] {\rlMin};
+            \hfTilt{\hfMin};
 
-        \nextgroupplot[title={RL --- tilt magnitude $\sqrt{\alpha^2+\beta^2}$}, ylabel={[deg]}]
-            \addplot[style1] table[x=time_ms, y=tilt_mag_deg] {mismatch_rl_min.csv};
-            \addplot[style3] table[x=time_ms, y=tilt_mag_deg] {mismatch_rl_nom.csv};
-            \addplot[style2] table[x=time_ms, y=tilt_mag_deg] {mismatch_rl_max.csv};
+        \nextgroupplot[xlabel={Time [ms]}]
+            \addplot[style1] table[x=time_ms, y=tilt_mag_deg] {\nmpcNom};
+            \addplot[style2] table[x=time_ms, y=tilt_mag_deg] {\rlNom};
+            \hfTilt{\hfNom};
+
+        \nextgroupplot[xlabel={Time [ms]}]
+            \addplot[style1] table[x=time_ms, y=tilt_mag_deg] {\nmpcMax};
+            \addplot[style2] table[x=time_ms, y=tilt_mag_deg] {\rlMax};
+            \hfTilt{\hfMax};
 
         \end{groupplot}
+
+        % Single shared legend, centred below the grid.
+        \node[anchor=north, yshift=-1.0cm] at (mmplots c2r3.south)
+            {\pgfplotslegendfromname{mmlegend}};
     \end{tikzpicture}
 \end{figure}
 

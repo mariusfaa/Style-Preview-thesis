@@ -1,0 +1,5 @@
+factor_idx,factor_name,threshold
+1,sigma_pos,NaN
+2,sigma_ori,0.00273841963426436
+3,sigma_vel,NaN
+4,sigma_ang,NaN

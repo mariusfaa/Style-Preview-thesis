@@ -1,0 +1,156 @@
+% !TEX program = pdflatex
+\documentclass[a4paper,11pt]{article}
+\usepackage[top=1.6cm,bottom=1.8cm,left=1.2cm,right=1.2cm]{geometry}
+\usepackage{tikz,pgfplots,pgfplotstable}
+\usepgfplotslibrary{groupplots,colormaps}
+\pgfplotsset{compat=1.17}
+
+\pagestyle{empty}
+
+\newcommand{\ctrl}{NMPC}
+\newcommand{\ctrlName}{NMPC 200\,Hz}
+\definecolor{boundaryRed}{HTML}{D55E00}
+
+\newcommand{\panelW}{3.55cm}
+\newcommand{\panelH}{3.55cm}
+
+\pgfplotsset{
+    pdivPanel/.style={
+        scale only axis=true,
+        width=\panelW,
+        height=\panelH,
+        xmin=-1, xmax=1,
+        ymin=-1, ymax=1,
+        tick label style={font=\scriptsize},
+        label style={font=\footnotesize},
+        xlabel near ticks,
+        ylabel near ticks,
+        x label style={yshift=4pt},
+        y label style={yshift=-8pt},
+        table/col sep=comma,
+        point meta min=0,
+        point meta max=1,
+        colormap/viridis,
+        axis on top,
+        colorbar,
+        colorbar style={
+            width=0.18cm,
+            title={$P_{\mathrm{div}}$},
+            title style={font=\tiny, yshift=-2pt},
+            ytick={0,0.25,0.5,0.75,1},
+            tick label style={font=\tiny},
+            tick align=outside
+        }
+    },
+    pdivSurface/.style={
+        matrix plot*,
+        mesh/cols=40,
+        point meta=explicit,
+        shader=interp
+    },
+    designMarks/.style={
+        only marks,
+        mark=*,
+        mark size=1.35pt,
+        mark options={fill=white, draw=black, line width=0.4pt}
+    },
+    pdivBoundary/.style={
+        boundaryRed,
+        line width=1.1pt,
+        unbounded coords=jump
+    }
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{figure}[p]
+    \centering
+    {\large\bfseries Divergence probability response surfaces \quad\textnormal{(\ctrlName)}\par}
+    {\footnotesize\itshape Quadratic logit model; other two factors held at coded center 0. Orange contour marks the 50\% failure boundary.\par}
+    \vspace{0.35cm}
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group name=pdivplots,
+                group size=3 by 2,
+                horizontal sep=3.0cm,
+                vertical sep=1.9cm
+            },
+            pdivPanel
+        ]
+
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$}
+        ]
+            \addplot[pdivSurface] table[x=fa_coded, y=fb_coded, meta=p_diverged] {\ctrl/rsm_pdiv_grid_pair1.csv};
+            \addplot[pdivBoundary] table[x=fa_coded, y=fb_coded] {\ctrl/rsm_pdiv_boundary_pair1.csv};
+            \addplot[designMarks] table[x=f1, y=f2] {\ctrl/rsm_runs.csv};
+
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$}
+        ]
+            \addplot[pdivSurface] table[x=fa_coded, y=fb_coded, meta=p_diverged] {\ctrl/rsm_pdiv_grid_pair2.csv};
+            \addplot[pdivBoundary] table[x=fa_coded, y=fb_coded] {\ctrl/rsm_pdiv_boundary_pair2.csv};
+            \addplot[designMarks] table[x=f1, y=f3] {\ctrl/rsm_runs.csv};
+
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$1$, $10$}
+        ]
+            \addplot[pdivSurface] table[x=fa_coded, y=fb_coded, meta=p_diverged] {\ctrl/rsm_pdiv_grid_pair3.csv};
+            \addplot[pdivBoundary] table[x=fa_coded, y=fb_coded] {\ctrl/rsm_pdiv_boundary_pair3.csv};
+            \addplot[designMarks] table[x=f1, y=f4] {\ctrl/rsm_runs.csv};
+
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$}
+        ]
+            \addplot[pdivSurface] table[x=fa_coded, y=fb_coded, meta=p_diverged] {\ctrl/rsm_pdiv_grid_pair4.csv};
+            \addplot[pdivBoundary] table[x=fa_coded, y=fb_coded] {\ctrl/rsm_pdiv_boundary_pair4.csv};
+            \addplot[designMarks] table[x=f2, y=f3] {\ctrl/rsm_runs.csv};
+
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$1$, $10$}
+        ]
+            \addplot[pdivSurface] table[x=fa_coded, y=fb_coded, meta=p_diverged] {\ctrl/rsm_pdiv_grid_pair5.csv};
+            \addplot[pdivBoundary] table[x=fa_coded, y=fb_coded] {\ctrl/rsm_pdiv_boundary_pair5.csv};
+            \addplot[designMarks] table[x=f2, y=f4] {\ctrl/rsm_runs.csv};
+
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$1$, $10$}
+        ]
+            \addplot[pdivSurface] table[x=fa_coded, y=fb_coded, meta=p_diverged] {\ctrl/rsm_pdiv_grid_pair6.csv};
+            \addplot[pdivBoundary] table[x=fa_coded, y=fb_coded] {\ctrl/rsm_pdiv_boundary_pair6.csv};
+            \addplot[designMarks] table[x=f3, y=f4] {\ctrl/rsm_runs.csv};
+
+        \end{groupplot}
+
+        \node[anchor=north, font=\footnotesize, align=center, text width=0.95\textwidth]
+            at ([yshift=-1.2cm]$(pdivplots c1r2.south)!0.5!(pdivplots c3r2.south)$)
+            {%
+            \tikz[baseline=-0.4ex]{\draw[fill=white, draw=black, line width=0.5pt] (0,0) circle (1.35pt);}\, Box--Behnken design points
+            \hspace{0.8em}
+            \tikz[baseline=-0.4ex]{\draw[boundaryRed, line width=1.1pt] (0,0) -- (6mm,0);}\, $P_{\mathrm{div}}=0.5$.
+            Each panel uses the common colour scale $0\leq P_{\mathrm{div}}\leq1$.
+            };
+    \end{tikzpicture}
+\end{figure}
+
+\end{document}

@@ -1,4 +1,4 @@
-% !TEX program = pdflatex
+﻿% !TEX program = pdflatex
 \documentclass[a4paper, 11pt]{article}
 \usepackage[top=1.5cm, bottom=2.0cm, left=1.2cm, right=1.2cm]{geometry}
 \usepackage{tikz, pgfplots, pgfplotstable}
@@ -128,11 +128,25 @@
     }%
 }
 
-% --- Scalars from meta_scalars.csv / meta_factors.csv (hard-coded here) ---
-\newcommand{\yRmsBase}{3.95065119548141e-12}
-\newcommand{\sigmaThrPos}{9.30572040929699e-05}
-\newcommand{\sigmaThrOri}{0.000486967525165863}
-\newcommand{\sigmaThrVel}{0.00523299114681495}
+% ====================================================================
+% CONTROLLER SELECTOR -- every data path below is read from \ctrl/.
+% Each controller keeps its own CSVs + contour fragments in a subfolder:
+%   NMPC        reduced-order NMPC      (has data)
+%   RL_100Hz    RL policy at 100 Hz     (folder present; populate to use)
+%   RL_1000Hz   RL policy at 1000 Hz    (folder present; populate to use)
+% Switch the whole document to another controller by editing this one line.
+% ====================================================================
+\newcommand{\ctrl}{NMPC} % <-- CHANGE THIS: NMPC / RL_100Hz / RL_1000Hz
+\newcommand{\ctrlName}{NMPC 200\,Hz} % display name (avoids underscore issues in text mode)
+
+% --- Scalars from \ctrl/meta_scalars.csv & \ctrl/meta_factors.csv ---
+% NOTE: these are controller-specific -- the values below are for NMPC.
+% When you switch \ctrl, update them from that controller's meta CSVs.
+% Values converted from SI to mm / mrad / mm/s / mrad/s (factor 1000).
+\newcommand{\yRmsBase}{3.95065119548141e-9}     % mm  (3.95e-12 m)
+\newcommand{\sigmaThrPos}{0.0930572040929699}   % mm  (9.31e-5 m)
+\newcommand{\sigmaThrOri}{0.486967525165863}    % mrad (4.87e-4 rad)
+\newcommand{\sigmaThrVel}{5.23299114681495}     % mm/s (5.23e-3 m/s)
 % sigma_thr_p50 for sigma_ang is NaN -- no vertical line drawn
 
 % --- Row-filter styles: keep only rows where a given CSV column equals N ---
@@ -156,13 +170,18 @@
 \thispagestyle{empty}
 
 % ====================================================================
+% PAGE 1 -- NMPC
+% Defaults set above (\ctrl=NMPC, \sigmaThr*) apply directly.
+% ====================================================================
+
+% ====================================================================
 % FIGURE 1: OFAT sensitivity (one panel per noise factor)
 % Matches MATLAB: log-log y_rms (median solid + p25/p75 dotted) on left,
 % linear P(diverged) on right yyaxis, dashed-black threshold line.
 % ====================================================================
 \begin{figure}[p]
     \centering
-    \large\bfseries Per-factor noise sensitivity \par
+    {\large\bfseries Per-factor noise sensitivity \quad\textnormal{(\ctrlName)} \par}
     {\footnotesize\itshape $y_{\mathrm{rms}}$: weighted RMS of state tracking error over the last 50\% of each run; replicates per noise level: 3.\par}
     \vspace{0.4cm}
     \begin{tikzpicture}
@@ -176,6 +195,7 @@
             width=\panelW, height=\panelH,
             grid=major,
             xmode=log, ymode=log,
+            ylabel style={yshift=-0.6em},
             tick label style={font=\scriptsize},
             label style={font=\footnotesize},
             title style={font=\footnotesize, yshift=-2pt},
@@ -188,16 +208,12 @@
         % -------- Panel 1: sigma_pos --------
         \nextgroupplot[
             title={Position noise},
-            xlabel={$\sigma_{\mathrm{pos}}$ [m]},
-            ylabel={$y_{\mathrm{rms}}$ [m]},
-            xmin=1e-6, xmax=1e-3,
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-3, xmax=1,
         ]
             \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=1]
-                table[x=sigma, y=y_rms_median] {ofat_summary.csv};
-            \addplot[style1, densely dotted, ofatfactor=1]
-                table[x=sigma, y=y_rms_p25] {ofat_summary.csv};
-            \addplot[style1, densely dotted, ofatfactor=1]
-                table[x=sigma, y=y_rms_p75] {ofat_summary.csv};
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
             \draw[black, densely dashed, line width=0.8pt]
                 ({axis cs:\sigmaThrPos,0}|-{rel axis cs:0,0})
                 -- ({axis cs:\sigmaThrPos,0}|-{rel axis cs:0,1});
@@ -205,16 +221,12 @@
         % -------- Panel 2: sigma_ori --------
         \nextgroupplot[
             title={Orientation noise},
-            xlabel={$\sigma_{\mathrm{ori}}$ [rad]},
-            ylabel={$y_{\mathrm{rms}}$ [m]},
-            xmin=1e-5, xmax=1e-2,
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-2, xmax=10,
         ]
             \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=2]
-                table[x=sigma, y=y_rms_median] {ofat_summary.csv};
-            \addplot[style1, densely dotted, ofatfactor=2]
-                table[x=sigma, y=y_rms_p25] {ofat_summary.csv};
-            \addplot[style1, densely dotted, ofatfactor=2]
-                table[x=sigma, y=y_rms_p75] {ofat_summary.csv};
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
             \draw[black, densely dashed, line width=0.8pt]
                 ({axis cs:\sigmaThrOri,0}|-{rel axis cs:0,0})
                 -- ({axis cs:\sigmaThrOri,0}|-{rel axis cs:0,1});
@@ -222,16 +234,12 @@
         % -------- Panel 3: sigma_vel --------
         \nextgroupplot[
             title={Linear velocity noise},
-            xlabel={$\sigma_{\mathrm{vel}}$ [m/s]},
-            ylabel={$y_{\mathrm{rms}}$ [m]},
-            xmin=1e-5, xmax=1e-2,
+            xlabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-2, xmax=10,
         ]
             \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=3]
-                table[x=sigma, y=y_rms_median] {ofat_summary.csv};
-            \addplot[style1, densely dotted, ofatfactor=3]
-                table[x=sigma, y=y_rms_p25] {ofat_summary.csv};
-            \addplot[style1, densely dotted, ofatfactor=3]
-                table[x=sigma, y=y_rms_p75] {ofat_summary.csv};
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
             \draw[black, densely dashed, line width=0.8pt]
                 ({axis cs:\sigmaThrVel,0}|-{rel axis cs:0,0})
                 -- ({axis cs:\sigmaThrVel,0}|-{rel axis cs:0,1});
@@ -239,16 +247,12 @@
         % -------- Panel 4: sigma_ang (no threshold line: NaN) --------
         \nextgroupplot[
             title={Angular velocity noise},
-            xlabel={$\sigma_{\mathrm{ang}}$ [rad/s]},
-            ylabel={$y_{\mathrm{rms}}$ [m]},
-            xmin=1e-4, xmax=1e-1,
+            xlabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-1, xmax=100,
         ]
             \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=4]
-                table[x=sigma, y=y_rms_median] {ofat_summary.csv};
-            \addplot[style1, densely dotted, ofatfactor=4]
-                table[x=sigma, y=y_rms_p25] {ofat_summary.csv};
-            \addplot[style1, densely dotted, ofatfactor=4]
-                table[x=sigma, y=y_rms_p75] {ofat_summary.csv};
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
 
         \end{groupplot}
 
@@ -259,50 +263,50 @@
         \begin{axis}[
             at={(ofatplots c1r1.south west)}, anchor=south west,
             width=\panelW, height=\panelH,
-            xmode=log, xmin=1e-6, xmax=1e-3, hide x axis,
+            xmode=log, xmin=1e-3, xmax=1, hide x axis,
             axis y line*=right, ymin=-0.05, ymax=1.05,
-            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize},
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
             ytick={0,0.5,1}, tick label style={font=\scriptsize},
             table/col sep=comma, unbounded coords=discard,
         ]
             \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=1]
-                table[x=sigma, y=p_diverged] {ofat_summary.csv};
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
         \end{axis}
         \begin{axis}[
             at={(ofatplots c2r1.south west)}, anchor=south west,
             width=\panelW, height=\panelH,
-            xmode=log, xmin=1e-5, xmax=1e-2, hide x axis,
+            xmode=log, xmin=1e-2, xmax=10, hide x axis,
             axis y line*=right, ymin=-0.05, ymax=1.05,
-            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize},
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
             ytick={0,0.5,1}, tick label style={font=\scriptsize},
             table/col sep=comma, unbounded coords=discard,
         ]
             \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=2]
-                table[x=sigma, y=p_diverged] {ofat_summary.csv};
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
         \end{axis}
         \begin{axis}[
             at={(ofatplots c1r2.south west)}, anchor=south west,
             width=\panelW, height=\panelH,
-            xmode=log, xmin=1e-5, xmax=1e-2, hide x axis,
+            xmode=log, xmin=1e-2, xmax=10, hide x axis,
             axis y line*=right, ymin=-0.05, ymax=1.05,
-            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize},
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
             ytick={0,0.5,1}, tick label style={font=\scriptsize},
             table/col sep=comma, unbounded coords=discard,
         ]
             \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=3]
-                table[x=sigma, y=p_diverged] {ofat_summary.csv};
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
         \end{axis}
         \begin{axis}[
             at={(ofatplots c2r2.south west)}, anchor=south west,
             width=\panelW, height=\panelH,
-            xmode=log, xmin=1e-4, xmax=1e-1, hide x axis,
+            xmode=log, xmin=1e-1, xmax=100, hide x axis,
             axis y line*=right, ymin=-0.05, ymax=1.05,
-            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize},
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
             ytick={0,0.5,1}, tick label style={font=\scriptsize},
             table/col sep=comma, unbounded coords=discard,
         ]
             \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=4]
-                table[x=sigma, y=p_diverged] {ofat_summary.csv};
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
         \end{axis}
 
         % --- Shared legend below the bottom row of panels ---
@@ -312,8 +316,6 @@
             {%
             \tikz[baseline=-0.5ex]{\draw[c1, line width=1.1pt] (0,0) -- (5mm,0);
                 \fill[c1] (2.5mm,0) circle (0.7pt);}\,median $y_{\mathrm{rms}}$
-            \hspace{0.6em}
-            \tikz[baseline=-0.5ex]{\draw[c1, densely dotted, line width=1.0pt] (0,0) -- (5mm,0);}\,25--75\% percentile
             \hspace{0.6em}
             \tikz[baseline=-0.5ex]{\draw[black, densely dashed, line width=0.8pt] (0,0) -- (5mm,0);}\,50\% divergence threshold
             \hspace{0.6em}
@@ -325,105 +327,737 @@
 \end{figure}
 
 % ====================================================================
-% FIGURE 2: RSM filled contours of log10(y_rms), one panel per factor pair.
-% The 14 colored band polygons per panel are pre-computed in MATLAB by
-% export_contour_polygons.m (bwboundaries of the 15-level contourf bands,
-% with parula RGB embedded in the \fill color). They are emitted as
-% rsm_contour_polys_pair{1..6}.tex and \input here so this file stays
-% pdflatex-only (no contour computation done in TeX).
+% FIGURE 2: Tracking-error response surfaces, one panel per factor pair.
+% Each panel reads its raw 40x40 prediction grid from
+%   \ctrl/rsm_contour_grid_pair{1..6}.csv  (columns fa_coded, fb_coded,
+%   log10_y_rms; produced by noiseRSM_reducedOrder.m)
+% and renders it with `matrix plot* + shader=interp`. The colour scale
+% is auto-set per panel (each surface fills its own range -- panel-to-
+% panel colour comparison is not meaningful, but the SHAPE in every
+% panel is visible). Axes show physical sigma values with units so no
+% explanation of "f" / "coded scale" / "Box-Behnken" is needed inline.
+% The colorbar tick labels convert log10(y_rms) -> mm at render time, so
+% readers see tracking error in millimetres instead of log10.
 % ====================================================================
 \begin{figure}[p]
     \centering
-    \large\bfseries Response surface contours: $\log_{10}(y_{\mathrm{rms}})$ \par
-    {\footnotesize\itshape Quadratic RSM fit; each panel scans two factors over $[-1,+1]$ with the other two held at coded $0$.\par}
-    \vspace{0.4cm}
+    {\large\bfseries Response surfaces of tracking error $y_{\mathrm{rms}}$ [mm] \quad\textnormal{(\ctrlName)} \par}
+    \vspace{0.35cm}
     \begin{tikzpicture}
         \begin{groupplot}[
             group style={
                 group name=rsmplots,
                 group size=3 by 2,
-                horizontal sep=2.4cm,
-                vertical sep=2.2cm,
+                horizontal sep=3.0cm,   % colorbar + gap + next panel's y-label
+                vertical sep=1.8cm,
             },
-            width=0.24\textwidth, height=4.8cm,
+            scale only axis=true,
+            width=3.4cm, height=3.4cm, % shrunk from 3.7 so 3-col layout + colorbars fits the text width
             xmin=-1, xmax=1, ymin=-1, ymax=1,
-            xtick={-1,-0.5,0,0.5,1}, ytick={-1,-0.5,0,0.5,1},
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            xlabel near ticks, ylabel near ticks,
+            x label style={yshift=4pt},
+            % Negative yshift on the rotated y-label pushes it leftward in document
+            % coords, keeping it OUTSIDE the colored panel even when ylabel-near-ticks
+            % is active. Without this, columns 2-3 land on top of the heatmap.
+            y label style={yshift=-8pt},
+            table/col sep=comma,
+            colormap/viridis,
+            axis on top,            % ticks + design-point scatter above the heatmap
+            colorbar,               % per-panel auto-scaled colorbar
+            colorbar style={
+                width=0.18cm,
+                title={[mm]},
+                title style={font=\tiny, yshift=-2pt},
+                % Auto-chosen log10 ticks -> rendered as physical mm.
+                % fixed+precision=1 keeps "39.8" readable for wide-range panels and
+                % "26.3" for narrow-range panels without false precision.
+                yticklabel={%
+                    \pgfmathparse{1000*pow(10,\tick)}%
+                    \pgfmathprintnumber[fixed, precision=1]{\pgfmathresult}%
+                },
+                tick label style={font=\tiny},
+                tick align=outside,
+            },
+        ]
+
+        % -------- Pair 1: sigma_pos vs sigma_ori --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair1.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f1, y=f2] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 2: sigma_pos vs sigma_vel --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair2.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f1, y=f3] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 3: sigma_pos vs sigma_ang --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$1$, $10$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair3.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f1, y=f4] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 4: sigma_ori vs sigma_vel --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair4.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f2, y=f3] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 5: sigma_ori vs sigma_ang --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$1$, $10$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair5.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f2, y=f4] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 6: sigma_vel vs sigma_ang --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$1$, $10$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair6.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f3, y=f4] {\ctrl/rsm_runs.csv};
+
+        \end{groupplot}
+
+        % --- One-line caption: just what the markers are. ---
+        \node[anchor=north, font=\footnotesize, align=center, text width=0.95\textwidth]
+            at ([yshift=-1.2cm]$(rsmplots c1r2.south)!0.5!(rsmplots c3r2.south)$)
+            {%
+            \tikz[baseline=-0.4ex]{\draw[fill=white, draw=black, line width=0.5pt] (0,0) circle (1.4pt);}\, Box--Behnken design points (projected onto each pair).
+            Each panel uses its own colour scale.
+            };
+
+    \end{tikzpicture}
+\end{figure}
+
+% ====================================================================
+% PAGE 2 -- RL_1000Hz
+% Switch controller folder + override scalars for the threshold lines.
+% In ofat_thresholds.csv only sigma_ori had a finite 50% threshold; the
+% other three factors did not cross 50% divergence within the swept range,
+% so their dashed lines are simply omitted from Panels 1, 3, 4 below.
+% ====================================================================
+\renewcommand{\ctrl}{RL_1000Hz}
+\renewcommand{\ctrlName}{RL 1000\,Hz}
+\renewcommand{\sigmaThrOri}{2.73841963426436} % mrad (2.74e-3 rad)
+
+% ====================================================================
+% FIGURE 1 (RL_1000Hz): OFAT sensitivity
+% ====================================================================
+\begin{figure}[p]
+    \centering
+    {\large\bfseries Per-factor noise sensitivity \quad\textnormal{(\ctrlName)} \par}
+    {\footnotesize\itshape $y_{\mathrm{rms}}$: weighted RMS of state tracking error over the last 50\% of each run; replicates per noise level: 3.\par}
+    \vspace{0.4cm}
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group name=ofatplotsB,
+                group size=2 by 2,
+                horizontal sep=2.6cm,
+                vertical sep=2.6cm,
+            },
+            width=\panelW, height=\panelH,
+            grid=major,
+            xmode=log, ymode=log,
+            ylabel style={yshift=-0.6em},
             tick label style={font=\scriptsize},
             label style={font=\footnotesize},
             title style={font=\footnotesize, yshift=-2pt},
             table/col sep=comma,
-            axis on top, % keep ticks/scatter above the colored polygons
+            unbounded coords=discard,
+            axis y line*=left,
+            axis x line*=bottom,
         ]
 
-        % -------- Pair 1: sigma_pos vs sigma_ori --------
-        \nextgroupplot[title={$\sigma_{\mathrm{pos}}$ vs $\sigma_{\mathrm{ori}}$},
-            xlabel={$f_{\mathrm{pos}}$}, ylabel={$f_{\mathrm{ori}}$}]
-            \input{rsm_contour_polys_pair1.tex}
-            \addplot[only marks, mark=*, mark size=1.6pt,
-                     mark options={fill=white, draw=black, line width=0.5pt}]
-                table[x=f1, y=f2] {rsm_runs.csv};
+        % -------- Panel 1: sigma_pos (no threshold line: NaN) --------
+        \nextgroupplot[
+            title={Position noise},
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-3, xmax=1,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=1]
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
 
-        % -------- Pair 2: sigma_pos vs sigma_vel --------
-        \nextgroupplot[title={$\sigma_{\mathrm{pos}}$ vs $\sigma_{\mathrm{vel}}$},
-            xlabel={$f_{\mathrm{pos}}$}, ylabel={$f_{\mathrm{vel}}$}]
-            \input{rsm_contour_polys_pair2.tex}
-            \addplot[only marks, mark=*, mark size=1.6pt,
-                     mark options={fill=white, draw=black, line width=0.5pt}]
-                table[x=f1, y=f3] {rsm_runs.csv};
+        % -------- Panel 2: sigma_ori --------
+        \nextgroupplot[
+            title={Orientation noise},
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-2, xmax=10,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=2]
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
+            \draw[black, densely dashed, line width=0.8pt]
+                ({axis cs:\sigmaThrOri,0}|-{rel axis cs:0,0})
+                -- ({axis cs:\sigmaThrOri,0}|-{rel axis cs:0,1});
 
-        % -------- Pair 3: sigma_pos vs sigma_ang --------
-        \nextgroupplot[title={$\sigma_{\mathrm{pos}}$ vs $\sigma_{\mathrm{ang}}$},
-            xlabel={$f_{\mathrm{pos}}$}, ylabel={$f_{\mathrm{ang}}$}]
-            \input{rsm_contour_polys_pair3.tex}
-            \addplot[only marks, mark=*, mark size=1.6pt,
-                     mark options={fill=white, draw=black, line width=0.5pt}]
-                table[x=f1, y=f4] {rsm_runs.csv};
+        % -------- Panel 3: sigma_vel (no threshold line: NaN) --------
+        \nextgroupplot[
+            title={Linear velocity noise},
+            xlabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-2, xmax=10,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=3]
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
 
-        % -------- Pair 4: sigma_ori vs sigma_vel --------
-        \nextgroupplot[title={$\sigma_{\mathrm{ori}}$ vs $\sigma_{\mathrm{vel}}$},
-            xlabel={$f_{\mathrm{ori}}$}, ylabel={$f_{\mathrm{vel}}$}]
-            \input{rsm_contour_polys_pair4.tex}
-            \addplot[only marks, mark=*, mark size=1.6pt,
-                     mark options={fill=white, draw=black, line width=0.5pt}]
-                table[x=f2, y=f3] {rsm_runs.csv};
-
-        % -------- Pair 5: sigma_ori vs sigma_ang --------
-        \nextgroupplot[title={$\sigma_{\mathrm{ori}}$ vs $\sigma_{\mathrm{ang}}$},
-            xlabel={$f_{\mathrm{ori}}$}, ylabel={$f_{\mathrm{ang}}$}]
-            \input{rsm_contour_polys_pair5.tex}
-            \addplot[only marks, mark=*, mark size=1.6pt,
-                     mark options={fill=white, draw=black, line width=0.5pt}]
-                table[x=f2, y=f4] {rsm_runs.csv};
-
-        % -------- Pair 6: sigma_vel vs sigma_ang --------
-        \nextgroupplot[title={$\sigma_{\mathrm{vel}}$ vs $\sigma_{\mathrm{ang}}$},
-            xlabel={$f_{\mathrm{vel}}$}, ylabel={$f_{\mathrm{ang}}$}]
-            \input{rsm_contour_polys_pair6.tex}
-            \addplot[only marks, mark=*, mark size=1.6pt,
-                     mark options={fill=white, draw=black, line width=0.5pt}]
-                table[x=f3, y=f4] {rsm_runs.csv};
+        % -------- Panel 4: sigma_ang (no threshold line: NaN) --------
+        \nextgroupplot[
+            title={Angular velocity noise},
+            xlabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-1, xmax=100,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=4]
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
 
         \end{groupplot}
 
-        % --- Per-panel colorbars (MATLAB-generated, one per pair) ---
-        \input{rsm_contour_cbar_pair1.tex}
-        \input{rsm_contour_cbar_pair2.tex}
-        \input{rsm_contour_cbar_pair3.tex}
-        \input{rsm_contour_cbar_pair4.tex}
-        \input{rsm_contour_cbar_pair5.tex}
-        \input{rsm_contour_cbar_pair6.tex}
+        % --- 4x SECONDARY AXES: P(diverged) on right y, linear, [0,1] ---
+        \begin{axis}[
+            at={(ofatplotsB c1r1.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-3, xmax=1, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=1]
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
+        \end{axis}
+        \begin{axis}[
+            at={(ofatplotsB c2r1.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-2, xmax=10, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=2]
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
+        \end{axis}
+        \begin{axis}[
+            at={(ofatplotsB c1r2.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-2, xmax=10, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=3]
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
+        \end{axis}
+        \begin{axis}[
+            at={(ofatplotsB c2r2.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-1, xmax=100, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=4]
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
+        \end{axis}
 
-        % --- Explanatory note below the panels ---
+        % --- Shared legend below the bottom row of panels ---
         \node[anchor=north, font=\footnotesize, align=center,
               text width=0.95\textwidth]
-            at ([yshift=-1.4cm]$(rsmplots c1r2.south)!0.5!(rsmplots c3r2.south)$)
+            at ([yshift=-1.4cm]$(ofatplotsB c1r2.south)!0.5!(ofatplotsB c2r2.south)$)
             {%
-            $f_i$ is the coded noise level (Box--Behnken design);
-            $\sigma_i = 10^{\,\mathrm{logc}_i + 0.5\,f_i}$ with $\mathrm{logc}=(-4.5,-3.5,-3.5,-2.5)$,
-            so each coded unit scales $\sigma$ by $\sqrt{10}\approx 3.16\times$.\quad
-            \tikz[baseline=-0.4ex]{
-                \draw[fill=white, draw=black, line width=0.5pt] (0,0) circle (1.4pt);
-            }\,Box--Behnken design points (projected onto each pair).
+            \tikz[baseline=-0.5ex]{\draw[c1, line width=1.1pt] (0,0) -- (5mm,0);
+                \fill[c1] (2.5mm,0) circle (0.7pt);}\,median $y_{\mathrm{rms}}$
+            \hspace{0.6em}
+            \tikz[baseline=-0.5ex]{\draw[black, densely dashed, line width=0.8pt] (0,0) -- (5mm,0);}\,50\% divergence threshold
+            \hspace{0.6em}
+            \tikz[baseline=-0.5ex]{\draw[c2, line width=1.1pt] (0,0) -- (5mm,0);
+                \fill[c2] (2mm,-0.7pt) rectangle ++(1.4pt,1.4pt);}\,$P_{\mathrm{div}}$ on right axis
+            };
+
+    \end{tikzpicture}
+\end{figure}
+
+% ====================================================================
+% FIGURE 2 (RL_1000Hz): Tracking-error response surfaces
+% ====================================================================
+\begin{figure}[p]
+    \centering
+    {\large\bfseries Response surfaces of tracking error $y_{\mathrm{rms}}$ [mm] \quad\textnormal{(\ctrlName)} \par}
+    \vspace{0.35cm}
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group name=rsmplotsB,
+                group size=3 by 2,
+                horizontal sep=3.0cm,
+                vertical sep=1.8cm,
+            },
+            scale only axis=true,
+            width=3.4cm, height=3.4cm,
+            xmin=-1, xmax=1, ymin=-1, ymax=1,
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            xlabel near ticks, ylabel near ticks,
+            x label style={yshift=4pt},
+            y label style={yshift=-8pt},
+            table/col sep=comma,
+            colormap/viridis,
+            axis on top,
+            colorbar,
+            colorbar style={
+                width=0.18cm,
+                title={[mm]},
+                title style={font=\tiny, yshift=-2pt},
+                yticklabel={%
+                    \pgfmathparse{1000*pow(10,\tick)}%
+                    \pgfmathprintnumber[fixed, precision=1]{\pgfmathresult}%
+                },
+                tick label style={font=\tiny},
+                tick align=outside,
+            },
+        ]
+
+        % -------- Pair 1: sigma_pos vs sigma_ori --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair1.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f1, y=f2] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 2: sigma_pos vs sigma_vel --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair2.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f1, y=f3] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 3: sigma_pos vs sigma_ang --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$1$, $10$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair3.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f1, y=f4] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 4: sigma_ori vs sigma_vel --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair4.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f2, y=f3] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 5: sigma_ori vs sigma_ang --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$1$, $10$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair5.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f2, y=f4] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 6: sigma_vel vs sigma_ang --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$1$, $10$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair6.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f3, y=f4] {\ctrl/rsm_runs.csv};
+
+        \end{groupplot}
+
+        % --- One-line caption: just what the markers are. ---
+        \node[anchor=north, font=\footnotesize, align=center, text width=0.95\textwidth]
+            at ([yshift=-1.2cm]$(rsmplotsB c1r2.south)!0.5!(rsmplotsB c3r2.south)$)
+            {%
+            \tikz[baseline=-0.4ex]{\draw[fill=white, draw=black, line width=0.5pt] (0,0) circle (1.4pt);}\, Box--Behnken design points (projected onto each pair).
+            Each panel uses its own colour scale.
+            };
+
+    \end{tikzpicture}
+\end{figure}
+
+% ====================================================================
+% PAGE 3 -- RL_100Hz
+% Switch controller folder + override scalars. Thresholds (in mm/mrad)
+% from RL_100Hz/ofat_thresholds.csv -- pos/ori/vel finite, ang NaN.
+% ====================================================================
+\renewcommand{\ctrl}{RL_100Hz}
+\renewcommand{\ctrlName}{RL 100\,Hz}
+\renewcommand{\sigmaThrPos}{0.0930572040929699} % mm  (9.31e-5 m)
+\renewcommand{\sigmaThrOri}{5.23299114681495}   % mrad (5.23e-3 rad)
+\renewcommand{\sigmaThrVel}{2.73841963426436}   % mm/s (2.74e-3 m/s)
+
+% ====================================================================
+% FIGURE 1 (RL_100Hz): OFAT sensitivity
+% ====================================================================
+\begin{figure}[p]
+    \centering
+    {\large\bfseries Per-factor noise sensitivity \quad\textnormal{(\ctrlName)} \par}
+    {\footnotesize\itshape $y_{\mathrm{rms}}$: weighted RMS of state tracking error over the last 50\% of each run; replicates per noise level: 3.\par}
+    \vspace{0.4cm}
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group name=ofatplotsC,
+                group size=2 by 2,
+                horizontal sep=2.6cm,
+                vertical sep=2.6cm,
+            },
+            width=\panelW, height=\panelH,
+            grid=major,
+            xmode=log, ymode=log,
+            ylabel style={yshift=-0.6em},
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            title style={font=\footnotesize, yshift=-2pt},
+            table/col sep=comma,
+            unbounded coords=discard,
+            axis y line*=left,
+            axis x line*=bottom,
+        ]
+
+        % -------- Panel 1: sigma_pos --------
+        \nextgroupplot[
+            title={Position noise},
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-3, xmax=1,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=1]
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
+            \draw[black, densely dashed, line width=0.8pt]
+                ({axis cs:\sigmaThrPos,0}|-{rel axis cs:0,0})
+                -- ({axis cs:\sigmaThrPos,0}|-{rel axis cs:0,1});
+
+        % -------- Panel 2: sigma_ori --------
+        \nextgroupplot[
+            title={Orientation noise},
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-2, xmax=10,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=2]
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
+            \draw[black, densely dashed, line width=0.8pt]
+                ({axis cs:\sigmaThrOri,0}|-{rel axis cs:0,0})
+                -- ({axis cs:\sigmaThrOri,0}|-{rel axis cs:0,1});
+
+        % -------- Panel 3: sigma_vel --------
+        \nextgroupplot[
+            title={Linear velocity noise},
+            xlabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-2, xmax=10,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=3]
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
+            \draw[black, densely dashed, line width=0.8pt]
+                ({axis cs:\sigmaThrVel,0}|-{rel axis cs:0,0})
+                -- ({axis cs:\sigmaThrVel,0}|-{rel axis cs:0,1});
+
+        % -------- Panel 4: sigma_ang (no threshold line: NaN) --------
+        \nextgroupplot[
+            title={Angular velocity noise},
+            xlabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            ylabel={$y_{\mathrm{rms}}$ [mm]},
+            xmin=1e-1, xmax=100,
+        ]
+            \addplot[style1, mark=o, mark size=1.4pt, ofatfactor=4]
+                table[x expr=\thisrow{sigma}*1000, y expr=\thisrow{y_rms_median}*1000] {\ctrl/ofat_summary.csv};
+
+        \end{groupplot}
+
+        % --- 4x SECONDARY AXES: P(diverged) on right y, linear, [0,1] ---
+        \begin{axis}[
+            at={(ofatplotsC c1r1.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-3, xmax=1, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=1]
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
+        \end{axis}
+        \begin{axis}[
+            at={(ofatplotsC c2r1.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-2, xmax=10, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=2]
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
+        \end{axis}
+        \begin{axis}[
+            at={(ofatplotsC c1r2.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-2, xmax=10, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=3]
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
+        \end{axis}
+        \begin{axis}[
+            at={(ofatplotsC c2r2.south west)}, anchor=south west,
+            width=\panelW, height=\panelH,
+            xmode=log, xmin=1e-1, xmax=100, hide x axis,
+            axis y line*=right, ymin=-0.05, ymax=1.05,
+            ylabel={$P_{\mathrm{div}}$}, ylabel style={font=\footnotesize, yshift=0.6em, xshift=-0.6em},
+            ytick={0,0.5,1}, tick label style={font=\scriptsize},
+            table/col sep=comma, unbounded coords=discard,
+        ]
+            \addplot[style2, mark=square*, mark size=1.4pt, ofatfactor=4]
+                table[x expr=\thisrow{sigma}*1000, y=p_diverged] {\ctrl/ofat_summary.csv};
+        \end{axis}
+
+        % --- Shared legend below the bottom row of panels ---
+        \node[anchor=north, font=\footnotesize, align=center,
+              text width=0.95\textwidth]
+            at ([yshift=-1.4cm]$(ofatplotsC c1r2.south)!0.5!(ofatplotsC c2r2.south)$)
+            {%
+            \tikz[baseline=-0.5ex]{\draw[c1, line width=1.1pt] (0,0) -- (5mm,0);
+                \fill[c1] (2.5mm,0) circle (0.7pt);}\,median $y_{\mathrm{rms}}$
+            \hspace{0.6em}
+            \tikz[baseline=-0.5ex]{\draw[black, densely dashed, line width=0.8pt] (0,0) -- (5mm,0);}\,50\% divergence threshold
+            \hspace{0.6em}
+            \tikz[baseline=-0.5ex]{\draw[c2, line width=1.1pt] (0,0) -- (5mm,0);
+                \fill[c2] (2mm,-0.7pt) rectangle ++(1.4pt,1.4pt);}\,$P_{\mathrm{div}}$ on right axis
+            };
+
+    \end{tikzpicture}
+\end{figure}
+
+% ====================================================================
+% FIGURE 2 (RL_100Hz): Tracking-error response surfaces
+% ====================================================================
+\begin{figure}[p]
+    \centering
+    {\large\bfseries Response surfaces of tracking error $y_{\mathrm{rms}}$ [mm] \quad\textnormal{(\ctrlName)} \par}
+    \vspace{0.35cm}
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                group name=rsmplotsC,
+                group size=3 by 2,
+                horizontal sep=3.0cm,
+                vertical sep=1.8cm,
+            },
+            scale only axis=true,
+            width=3.4cm, height=3.4cm,
+            xmin=-1, xmax=1, ymin=-1, ymax=1,
+            tick label style={font=\scriptsize},
+            label style={font=\footnotesize},
+            xlabel near ticks, ylabel near ticks,
+            x label style={yshift=4pt},
+            y label style={yshift=-8pt},
+            table/col sep=comma,
+            colormap/viridis,
+            axis on top,
+            colorbar,
+            colorbar style={
+                width=0.18cm,
+                title={[mm]},
+                title style={font=\tiny, yshift=-2pt},
+                yticklabel={%
+                    \pgfmathparse{1000*pow(10,\tick)}%
+                    \pgfmathprintnumber[fixed, precision=1]{\pgfmathresult}%
+                },
+                tick label style={font=\tiny},
+                tick align=outside,
+            },
+        ]
+
+        % -------- Pair 1: sigma_pos vs sigma_ori --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair1.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f1, y=f2] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 2: sigma_pos vs sigma_vel --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair2.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f1, y=f3] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 3: sigma_pos vs sigma_ang --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{pos}}$ [mm]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.01$, $0.1$},
+            ytick={-1,1}, yticklabels={$1$, $10$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair3.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f1, y=f4] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 4: sigma_ori vs sigma_vel --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$0.1$, $1$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair4.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f2, y=f3] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 5: sigma_ori vs sigma_ang --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{ori}}$ [mrad]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$1$, $10$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair5.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f2, y=f4] {\ctrl/rsm_runs.csv};
+
+        % -------- Pair 6: sigma_vel vs sigma_ang --------
+        \nextgroupplot[
+            xlabel={$\sigma_{\mathrm{vel}}$ [mm/s]},
+            ylabel={$\sigma_{\mathrm{ang}}$ [mrad/s]},
+            xtick={-1,1}, xticklabels={$0.1$, $1$},
+            ytick={-1,1}, yticklabels={$1$, $10$},
+        ]
+            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
+                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+                {\ctrl/rsm_contour_grid_pair6.csv};
+            \addplot[only marks, mark=*, mark size=1.4pt,
+                     mark options={fill=white, draw=black, line width=0.4pt}]
+                table[x=f3, y=f4] {\ctrl/rsm_runs.csv};
+
+        \end{groupplot}
+
+        % --- One-line caption: just what the markers are. ---
+        \node[anchor=north, font=\footnotesize, align=center, text width=0.95\textwidth]
+            at ([yshift=-1.2cm]$(rsmplotsC c1r2.south)!0.5!(rsmplotsC c3r2.south)$)
+            {%
+            \tikz[baseline=-0.4ex]{\draw[fill=white, draw=black, line width=0.5pt] (0,0) circle (1.4pt);}\, Box--Behnken design points (projected onto each pair).
+            Each panel uses its own colour scale.
             };
 
     \end{tikzpicture}
