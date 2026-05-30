@@ -1,0 +1,15 @@
+% !TEX program = pdflatex
+\documentclass[a4paper,11pt]{article}
+\usepackage[top=1.6cm,bottom=1.8cm,left=1.2cm,right=1.2cm]{geometry}
+\usepackage{tikz,pgfplots,pgfplotstable}
+\usepgfplotslibrary{groupplots,colormaps}
+\pgfplotsset{compat=1.17}
+\pagestyle{empty}
+
+\newcommand{\ctrl}{RL_1000Hz}
+\newcommand{\ctrlName}{RL 1000\,Hz}
+
+\begin{document}
+\thispagestyle{empty}
+\input{rsm_contours_pdiv_body.tex}
+\end{document}
