@@ -1,7 +1,7 @@
 ﻿% !TEX program = pdflatex
 \documentclass[a4paper, 11pt]{article}
 \usepackage[top=1.5cm, bottom=2.0cm, left=1.2cm, right=1.2cm]{geometry}
-\usepackage{tikz, pgfplots, pgfplotstable}
+\usepackage{graphicx, tikz, pgfplots, pgfplotstable}
 \usepackage{etoolbox}
 \usepgfplotslibrary{groupplots, fillbetween, colormaps}
 \pgfplotsset{compat=1.17}
@@ -331,7 +331,7 @@
 % Each panel reads its raw 40x40 prediction grid from
 %   \ctrl/rsm_contour_grid_pair{1..6}.csv  (columns fa_coded, fb_coded,
 %   log10_y_rms; produced by noiseRSM_reducedOrder.m)
-% and renders it with `matrix plot* + shader=interp`. The colour scale
+% and renders it as filled contours, matching MATLAB contourf-style colour bands.
 % is auto-set per panel (each surface fills its own range -- panel-to-
 % panel colour comparison is not meaningful, but the SHAPE in every
 % panel is visible). Axes show physical sigma values with units so no
@@ -343,6 +343,8 @@
     \centering
     {\large\bfseries Response surfaces of tracking error $y_{\mathrm{rms}}$ [mm] \quad\textnormal{(\ctrlName)} \par}
     \vspace{0.35cm}
+    \includegraphics[width=0.98\textwidth]{figures/rsm_contours_NMPC.pdf}
+    \iffalse
     \begin{tikzpicture}
         \begin{groupplot}[
             group style={
@@ -354,6 +356,7 @@
             scale only axis=true,
             width=3.4cm, height=3.4cm, % shrunk from 3.7 so 3-col layout + colorbars fits the text width
             xmin=-1, xmax=1, ymin=-1, ymax=1,
+            view={0}{90},
             tick label style={font=\scriptsize},
             label style={font=\footnotesize},
             xlabel near ticks, ylabel near ticks,
@@ -389,8 +392,8 @@
             xtick={-1,1}, xticklabels={$0.01$, $0.1$},
             ytick={-1,1}, yticklabels={$0.1$, $1$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair1.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -403,8 +406,8 @@
             xtick={-1,1}, xticklabels={$0.01$, $0.1$},
             ytick={-1,1}, yticklabels={$0.1$, $1$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair2.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -417,8 +420,8 @@
             xtick={-1,1}, xticklabels={$0.01$, $0.1$},
             ytick={-1,1}, yticklabels={$1$, $10$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair3.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -431,8 +434,8 @@
             xtick={-1,1}, xticklabels={$0.1$, $1$},
             ytick={-1,1}, yticklabels={$0.1$, $1$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair4.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -445,8 +448,8 @@
             xtick={-1,1}, xticklabels={$0.1$, $1$},
             ytick={-1,1}, yticklabels={$1$, $10$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair5.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -459,8 +462,8 @@
             xtick={-1,1}, xticklabels={$0.1$, $1$},
             ytick={-1,1}, yticklabels={$1$, $10$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair6.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -477,6 +480,7 @@
             };
 
     \end{tikzpicture}
+    \fi
 \end{figure}
 
 % ====================================================================
@@ -638,6 +642,8 @@
     \centering
     {\large\bfseries Response surfaces of tracking error $y_{\mathrm{rms}}$ [mm] \quad\textnormal{(\ctrlName)} \par}
     \vspace{0.35cm}
+    \includegraphics[width=0.98\textwidth]{figures/rsm_contours_RL_1000Hz.pdf}
+    \iffalse
     \begin{tikzpicture}
         \begin{groupplot}[
             group style={
@@ -649,6 +655,7 @@
             scale only axis=true,
             width=3.4cm, height=3.4cm,
             xmin=-1, xmax=1, ymin=-1, ymax=1,
+            view={0}{90},
             tick label style={font=\scriptsize},
             label style={font=\footnotesize},
             xlabel near ticks, ylabel near ticks,
@@ -678,8 +685,8 @@
             xtick={-1,1}, xticklabels={$0.01$, $0.1$},
             ytick={-1,1}, yticklabels={$0.1$, $1$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair1.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -692,8 +699,8 @@
             xtick={-1,1}, xticklabels={$0.01$, $0.1$},
             ytick={-1,1}, yticklabels={$0.1$, $1$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair2.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -706,8 +713,8 @@
             xtick={-1,1}, xticklabels={$0.01$, $0.1$},
             ytick={-1,1}, yticklabels={$1$, $10$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair3.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -720,8 +727,8 @@
             xtick={-1,1}, xticklabels={$0.1$, $1$},
             ytick={-1,1}, yticklabels={$0.1$, $1$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair4.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -734,8 +741,8 @@
             xtick={-1,1}, xticklabels={$0.1$, $1$},
             ytick={-1,1}, yticklabels={$1$, $10$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair5.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -748,8 +755,8 @@
             xtick={-1,1}, xticklabels={$0.1$, $1$},
             ytick={-1,1}, yticklabels={$1$, $10$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair6.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -766,6 +773,7 @@
             };
 
     \end{tikzpicture}
+    \fi
 \end{figure}
 
 % ====================================================================
@@ -933,6 +941,8 @@
     \centering
     {\large\bfseries Response surfaces of tracking error $y_{\mathrm{rms}}$ [mm] \quad\textnormal{(\ctrlName)} \par}
     \vspace{0.35cm}
+    \includegraphics[width=0.98\textwidth]{figures/rsm_contours_RL_100Hz.pdf}
+    \iffalse
     \begin{tikzpicture}
         \begin{groupplot}[
             group style={
@@ -944,6 +954,7 @@
             scale only axis=true,
             width=3.4cm, height=3.4cm,
             xmin=-1, xmax=1, ymin=-1, ymax=1,
+            view={0}{90},
             tick label style={font=\scriptsize},
             label style={font=\footnotesize},
             xlabel near ticks, ylabel near ticks,
@@ -973,8 +984,8 @@
             xtick={-1,1}, xticklabels={$0.01$, $0.1$},
             ytick={-1,1}, yticklabels={$0.1$, $1$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair1.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -987,8 +998,8 @@
             xtick={-1,1}, xticklabels={$0.01$, $0.1$},
             ytick={-1,1}, yticklabels={$0.1$, $1$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair2.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -1001,8 +1012,8 @@
             xtick={-1,1}, xticklabels={$0.01$, $0.1$},
             ytick={-1,1}, yticklabels={$1$, $10$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair3.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -1015,8 +1026,8 @@
             xtick={-1,1}, xticklabels={$0.1$, $1$},
             ytick={-1,1}, yticklabels={$0.1$, $1$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair4.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -1029,8 +1040,8 @@
             xtick={-1,1}, xticklabels={$0.1$, $1$},
             ytick={-1,1}, yticklabels={$1$, $10$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair5.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -1043,8 +1054,8 @@
             xtick={-1,1}, xticklabels={$0.1$, $1$},
             ytick={-1,1}, yticklabels={$1$, $10$},
         ]
-            \addplot[matrix plot*, mesh/cols=40, point meta=explicit, shader=interp]
-                table[x=fa_coded, y=fb_coded, meta=log10_y_rms]
+            \addplot3[contour filled={number=15}, mesh/cols=40]
+                table[x=fa_coded, y=fb_coded, z=log10_y_rms]
                 {\ctrl/rsm_contour_grid_pair6.csv};
             \addplot[only marks, mark=*, mark size=1.4pt,
                      mark options={fill=white, draw=black, line width=0.4pt}]
@@ -1061,6 +1072,7 @@
             };
 
     \end{tikzpicture}
+    \fi
 \end{figure}
 
 \end{document}

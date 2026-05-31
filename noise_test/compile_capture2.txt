@@ -1,0 +1,1236 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(noise_plots.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-12-24>
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/base\size11.clo))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
+
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.
+sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.st
+y
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
+-common.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil
+-latex.def)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.
+code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex)
+))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.
+sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
+fg)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
+)))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.
+sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+libraryfiltered.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.c
+fg)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s-pdftex.def
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+s-common-pdf.def)))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+ssoftpath.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsy
+sprotocol.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx)
+)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+e.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
+.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil.
+code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparse
+r.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.basic.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.trigonometric.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.random.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.comparison.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.base.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.round.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.misc.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunct
+ions.integerarithmetics.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc.
+code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat
+.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.
+tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epoints.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathconstruct.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathusage.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+escopes.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+egraphicstate.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+etransformations.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+equick.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eobjects.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epathprocessing.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+earrows.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eshade.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eimage.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+eexternal.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+elayers.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+etransparency.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+epatterns.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcor
+erdf.code.tex)))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+shapes.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+plot.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
+mp-version-0-65.sty)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfco
+mp-version-1-18.sty))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.st
+y
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.s
+ty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkeys
+.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.code
+.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.
+code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z\tikz.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
+aryplothandlers.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+matrix.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarytopaths.code.tex)))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgfplots\pgfplots.sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.rev
+ision.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.cod
+e.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscore
+.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgfplots
+sysgeneric.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgfplot
+slibrary.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompat
+ib\pgfplotsoldpgfsupp_loader.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
+aryfpu.code.tex)
+Package pgfplots: loading complementary utilities for your pgf version...
+
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/oldpgfcompat
+ib\pgfplotsoldpgfsupp_pgfutil-common-lists.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplot
+sutil.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
+e\pgfplotsliststructure.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
+e\pgfplotsliststructureext.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
+e\pgfplotsarray.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
+e\pgfplotsmatrix.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/numtable\pgf
+plotstableshared.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/liststructur
+e\pgfplotsdeque.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplot
+sbinary.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplot
+sbinary.data.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplot
+sutil.verb.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\pgflibr
+arypgfplots.surfshading.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/sys\pgflibra
+rypgfplots.surfshading.pgfsys-pdftex.def)))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplot
+scolormap.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/util\pgfplot
+scolor.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsstac
+kedplots.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsplot
+handlers.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsmesh
+plothandler.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotsmesh
+plotimage.code.tex)))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.sca
+ling.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotscoor
+dprocessing.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.err
+orbars.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.mar
+kers.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplotstick
+s.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.pat
+hs.code.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarydecorations.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodule
+decorations.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarydecorations.pathmorphing.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/decorat
+ions\pgflibrarydecorations.pathmorphing.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarydecorations.pathreplacing.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/decorat
+ions\pgflibrarydecorations.pathreplacing.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzlib
+rarypgfplots.contourlua.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibraryplotmarks.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
+aryplotmarks.code.tex)))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/pgfplots\pgfplotstable.
+sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots\pgfplots.rev
+ision.tex)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/numtable\pgf
+plotstable.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/numtable\pgf
+plotstable.coltype.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzlib
+rarypgfplots.groupplots.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarycalc.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzlib
+rarypgfplots.fillbetween.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/pgfcontrib\t
+ikzlibraryfillbetween.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibraryintersections.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibr
+aryintersections.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/pgfcontrib\t
+ikzlibrarydecorations.softclip.code.tex
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/pgfcontrib\p
+gflibraryfillbetween.code.tex)))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzlib
+rarypgfplots.decorations.softclip.code.tex))
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/generic/pgfplots/libs\tikzlib
+rarypgfplots.colormaps.code.tex)
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(0.99pt)=(48,18,
+59) (color no 1) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(1pt)=(61,53,139
+) (color no 2) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(1.99pt)=(61,53,
+139) (color no 3) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(2pt)=(68,86,199
+) (color no 4) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(2.99pt)=(68,86,
+199) (color no 5) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(3pt)=(71,118,23
+8) (color no 6) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(3.99pt)=(71,118
+,238) (color no 7) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(4pt)=(66,148,25
+5) (color no 8) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(4.99pt)=(66,148
+,255) (color no 9) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(5pt)=(47,178,24
+4) (color no 10) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(5.99pt)=(47,178
+,244) (color no 11) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(6pt)=(27,208,21
+3) (color no 12) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(6.99pt)=(27,208
+,213) (color no 13) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(7pt)=(26,228,18
+2) (color no 14) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(7.99pt)=(26,228
+,182) (color no 15) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(8pt)=(53,243,14
+8) (color no 16) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(8.99pt)=(53,243
+,148) (color no 17) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(9pt)=(97,252,10
+8) (color no 18) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(9.99pt)=(97,252
+,108) (color no 19) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(10pt)=(143,255,
+73) (color no 20) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(10.99pt)=(143,2
+55,73) (color no 21) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(11pt)=(180,248,
+54) (color no 22) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(11.99pt)=(180,2
+48,54) (color no 23) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(12pt)=(210,233,
+53) (color no 24) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(12.99pt)=(210,2
+33,53) (color no 25) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(13pt)=(235,211,
+57) (color no 26) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(13.99pt)=(235,2
+11,57) (color no 27) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(14pt)=(250,186,
+57) (color no 28) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(14.99pt)=(250,1
+86,57) (color no 29) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(15pt)=(254,155,
+45) (color no 30) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(15.99pt)=(254,1
+55,45) (color no 31) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(16pt)=(249,117,
+29) (color no 32) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(16.99pt)=(249,1
+17,29) (color no 33) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(17pt)=(236,83,1
+5) (color no 34) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(17.99pt)=(236,8
+3,15) (color no 35) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(18pt)=(218,57,7
+) (color no 36) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(18.99pt)=(218,5
+7,7) (color no 37) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(19pt)=(193,35,2
+) (color no 38) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(19.99pt)=(193,3
+5,2) (color no 39) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(20pt)=(161,18,1
+) (color no 40) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.99/1.000000000
+0= 1+-0.01 which is no integer). The error occured near `rgb255(20.99pt)=(161,1
+8,1) (color no 41) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+! Package pgfplots Error: The provided colormap positions are not multiples of 
+the prescribed mesh width h=1.0000000000 (found one with H/h = 0.01/1.000000000
+0= 0+-0.01 which is no integer). The error occured near `rgb255(21pt)=(122,4,3)
+ (color no 42) '.
+
+See the pgfplots package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 }
+       
+
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
+tex.def) (noise_plots.aux)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
+ii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
+ase.sty
+(C:\Users\mariu\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.c
+fg))
+Package pgfplots notification 'compat/show suggested version=true': you might b
+enefit from \pgfplotsset{compat=1.18} (current compat level: 1.17).
+
+NOTE: coordinate (1Y1.7782791e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e0],3Y0.0e0]) has been dropped because it is unbounded (
+in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],1Y5.8118393e-1]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],1Y1.4119064e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],1Y3.3428299e0]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],1Y7.8307983e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],1Y1.8930557e1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],3Y0.0e0]) has been dropped because it is unbou
+nded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],3Y0.0e0]) has been dropped because it is unbou
+nded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],3Y0.0e0]) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],1Y2.8731155e-2]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],1Y6.8472885e-2]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],1Y1.635936e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],1Y3.8652817e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],1Y8.980214e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],1Y2.2275787e0]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],1Y5.1438965e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],1Y1.219011e1]) has been dropped because it is 
+unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],3Y0.0e0]) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-1],1Y4.1486359e-3]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-1],1Y9.8585205e-3]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-1],1Y2.3215897e-2]) has been dropped because it 
+is unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e0],1Y5.6230515e-2]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e0],1Y1.3003845e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e0],1Y3.1371048e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e1],1Y7.5163132e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e1],1Y1.7376526e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e2],1Y4.164383e0]) has been dropped because it is unboun
+ded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-3],1Y5.7847931e-1]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-3],1Y1.3805695e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-3],1Y3.3088806e0]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-2],1Y7.7703369e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-2],1Y1.8714554e1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-2],1Y4.1258072e1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e0],3Y0.0e0]) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],3Y0.0e0]) has been dropped because it is unbou
+nded (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],3Y0.0e0]) has been dropped because it is unbou
+nded (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],3Y0.0e0]) has been dropped because it is unbounded (
+in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],1Y2.8731155e-2]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],1Y6.8472885e-2]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],1Y1.635936e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],1Y3.8652817e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],1Y8.980214e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],1Y2.2275787e0]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],1Y5.1438965e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],1Y1.219011e1]) has been dropped because it is 
+unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],3Y0.0e0]) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-1],1Y4.1486359e-3]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-1],1Y9.8585205e-3]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-1],1Y2.3215897e-2]) has been dropped because it 
+is unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e0],1Y5.6230515e-2]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e0],1Y1.3003845e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e0],1Y3.1371048e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e1],1Y7.5163132e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e1],1Y1.7376526e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e2],1Y4.164383e0]) has been dropped because it is unboun
+ded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-3],1Y5.7847931e-1]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-3],1Y1.3805695e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-3],1Y3.3088806e0]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-2],1Y7.7703369e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-2],1Y1.8714554e1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-2],1Y4.1258072e1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e0],3Y0.0e0]) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],1Y5.8118393e-1]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],1Y1.4119064e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],1Y3.3428299e0]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],1Y7.8307983e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],1Y1.8930557e1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],3Y0.0e0]) has been dropped because it is unbou
+nded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],3Y0.0e0]) has been dropped because it is unbou
+nded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],3Y0.0e0]) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],3Y0.0e0]) has been dropped because it is unbounded (
+in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-1],1Y4.1486359e-3]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-1],1Y9.8585205e-3]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-1],1Y2.3215897e-2]) has been dropped because it 
+is unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e0],1Y5.6230515e-2]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e0],1Y1.3003845e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e0],1Y3.1371048e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e1],1Y7.5163132e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e1],1Y1.7376526e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e2],1Y4.164383e0]) has been dropped because it is unboun
+ded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-3],1Y5.7847931e-1]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-3],1Y1.3805695e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-3],1Y3.3088806e0]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-2],1Y7.7703369e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-2],1Y1.8714554e1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-2],1Y4.1258072e1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e0],3Y0.0e0]) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],1Y5.8118393e-1]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],1Y1.4119064e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],1Y3.3428299e0]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],1Y7.8307983e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],1Y1.8930557e1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],3Y0.0e0]) has been dropped because it is unbo
+unded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],3Y0.0e0]) has been dropped because it is unbou
+nded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],3Y0.0e0]) has been dropped because it is unbou
+nded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],3Y0.0e0]) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],1Y2.8731155e-2]) has been dropped because it is unb
+ounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],1Y6.8472885e-2]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],1Y1.635936e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],1Y3.8652817e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],1Y8.980214e-1]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],1Y2.2275787e0]) has been dropped because it i
+s unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],1Y5.1438965e0]) has been dropped because it is
+ unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],1Y1.219011e1]) has been dropped because it is 
+unbounded (in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],3Y0.0e0]) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],1) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],1) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],1) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],1) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],1) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-1],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e0],0) has been dropped because it is unbounded (in
+ x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e2],0) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-3],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-3],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-3],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-2],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e-1],1) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e-1],1) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e0],1) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],1) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-1],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e0],0) has been dropped because it is unbounded (in
+ x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e2],0) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-3],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-3],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-3],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-2],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e-1],1) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e-1],1) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e0],1) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],1) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],1) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],1) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],1) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-1],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e0],0) has been dropped because it is unbounded (in
+ x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e2],0) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-3],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-3],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-3],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-2],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e-1],1) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e-1],1) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e0],1) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],1) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],1) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],1) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],1) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e-2],0) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.371373e-2],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.6234131e-2],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.333522e-1],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.1622772e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.4989426e-1],0) has been dropped because it is unbounded (
+in x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.7782791e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.2169647e0],0) has been dropped because it is unbounded (i
+n x). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.0e1],1) has been dropped because it is unbounded (in x). 
+(see also unbounded coords=jump). 

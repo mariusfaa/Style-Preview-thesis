@@ -33,8 +33,8 @@
 clear ocp_solver sim_solver;
 clearvars; clc;
 
-acados_root  = 'C:\Users\mariujf\acados';
-project_root = 'C:\Users\mariujf\noise_testing';
+acados_root  = 'C:\Users\mariu\acados';
+project_root = 'C:\Users\mariu\noise_testing';
 
 setenv('ACADOS_SOURCE_DIR',        acados_root);
 setenv('ENV_ACADOS_INSTALL_DIR',   acados_root);
@@ -50,6 +50,88 @@ addpath(genpath(fullfile(project_root, 'utilities')));
 
 import casadi.*
 
+%% --- CONTROLLER SELECTION ---
+% Pick which controller to test: 'nmpc', 'rl100', or 'rl1000'.
+controller_choices = {'nmpc', 'rl100', 'rl1000'};
+controller_type = controller_choices{1};  % next test: NMPC
+
+% Pick plant integration backend: 'acados', 'ode15s', or 'ode15s_full'
+% ('ode15' is accepted as an alias for ode15s).
+% The RL agents were developed with MATLAB ODE integration, so 'ode15s' is
+% useful for checking whether integrator mismatch explains a failure.
+plant_integrator_choices = {'acados', 'ode15s', 'ode15s_full'};
+plant_integrator = plant_integrator_choices{1};  % use acados for NMPC
+
+% Pick the plant/model parameter set. NMPC results in this script originally
+% used V4 with the fast-model solenoid radius correction. RL training may
+% have used a nominal ODE model, so this is a useful compatibility check.
+plant_parameter_choices = {'v4_corrected', 'v4_nominal', 'v2_corrected', 'v2_nominal'};
+plant_parameter_set = plant_parameter_choices{1};
+
+% RL agents can live either in project_root/agents or directly in project_root.
+switch lower(controller_type)
+    case 'nmpc'
+        agent_paths = {};
+    case 'rl100'
+        agent_paths = { ...
+            fullfile(project_root, 'agents', 'L2N128_1.mat'), ...
+            fullfile(project_root, 'L2N128_1.mat')};
+    case 'rl1000'
+        agent_paths = { ...
+            fullfile(project_root, 'agents', 'HF_1000Hz_1.mat'), ...
+            fullfile(project_root, 'HF_1000Hz_1.mat')};
+    otherwise
+        error('Unsupported controller_type "%s". Use "nmpc", "rl100", or "rl1000".', controller_type);
+end
+
+% Use 'state' when the agent was trained on absolute reduced state directly.
+% Use 'error' when the agent was trained around zero as x - xEq.
+agent_observation = 'state';
+
+% RL convention switches. The developer note used the saved agent directly;
+% 'greedy' is useful for deterministic PPO evaluation, but 'agent' matches
+% the original call more closely.
+rl_policy_mode = 'agent';      % 'agent' or 'greedy'
+rl_action_sign = 1;            % set to -1 if the training plant used opposite current sign
+rl_action_order = 1:4;         % reorder currents if the training plant used another coil order
+
+use_nmpc = strcmpi(controller_type, 'nmpc');
+use_rl   = any(strcmpi(controller_type, {'rl100','rl1000'}));
+
+agent = [];
+controller_name = 'nmpc';
+agent_path = '';
+if use_rl
+    existing_agent_paths = agent_paths(cellfun(@(p) exist(p, 'file') == 2, agent_paths));
+    if isempty(existing_agent_paths)
+        error('controller_type is "%s", but none of the configured agent_paths exist.', controller_type);
+    end
+    agent_path = existing_agent_paths{1};
+    loaded_data = load(agent_path, 'agent');
+    if ~isfield(loaded_data, 'agent')
+        error('Agent file "%s" does not contain a variable named "agent".', agent_path);
+    end
+    switch lower(rl_policy_mode)
+        case 'agent'
+            agent = loaded_data.agent;
+        case 'greedy'
+            agent = getGreedyPolicy(loaded_data.agent);
+        otherwise
+            error('Unsupported rl_policy_mode "%s". Use "agent" or "greedy".', rl_policy_mode);
+    end
+    [~, controller_name, ~] = fileparts(agent_path);
+    fprintf('\n--- Loaded RL agent: %s ---\n', agent_path);
+    fprintf('--- RL policy mode: %s ---\n', rl_policy_mode);
+else
+    fprintf('\n--- Using NMPC controller ---\n');
+end
+output_tag = regexprep(controller_name, '[^\w-]', '_');
+if use_nmpc
+    output_suffix = '';
+else
+    output_suffix = ['_' output_tag];
+end
+
 %% --- MODEL SETUP (reduced order: 10 states) ---
 nx_full = 12;
 nx      = 10;
@@ -58,10 +140,19 @@ nu      = 4;
 x_full = SX.sym('x_full', nx_full);
 u_sym  = SX.sym('u', nu);
 
-parameters_maggy_V4;
-correctionFactorFast   = computeSolenoidRadiusCorrectionFactor(params, 'fast');
-paramsFast             = params;
-paramsFast.solenoids.r = correctionFactorFast * paramsFast.solenoids.r;
+switch lower(plant_parameter_set)
+    case {'v4_corrected','v4_nominal'}
+        parameters_maggy_V4;
+    case {'v2_corrected','v2_nominal'}
+        parameters_maggy_V2;
+    otherwise
+        error('Unsupported plant_parameter_set "%s".', plant_parameter_set);
+end
+paramsFast = params;
+if contains(lower(plant_parameter_set), 'corrected')
+    correctionFactorFast   = computeSolenoidRadiusCorrectionFactor(params, 'fast');
+    paramsFast.solenoids.r = correctionFactorFast * paramsFast.solenoids.r;
+end
 
 f_expl_full = maglevSystemDynamicsCasADi(x_full, u_sym, paramsFast);
 f_func_full = casadi.Function('f_full', {x_full, u_sym}, {f_expl_full});
@@ -88,11 +179,18 @@ xdot_r        = SX.sym('xdot_r', nx);
 x_full_from_r = [x_r(1:5); 0; x_r(6:8); x_r(9:10); 0];
 dx_full       = f_func_full(x_full_from_r, u_sym);
 f_expl_r      = [dx_full(1:5); dx_full(7:11)];
+f_func_r      = casadi.Function('f_reduced', {x_r, u_sym}, {f_expl_r});
 
 %% --- OCP SETUP (same as workingSimulatorReducedOrder.m) ---
 N      = 10;
 Tf     = 0.05;
 dt_mpc = Tf / N;
+switch lower(controller_type)
+    case 'rl100'
+        dt_mpc = 1/100;
+    case 'rl1000'
+        dt_mpc = 1/1000;
+end
 
 Q = diag([1e2, 1e2, 1e3, ...
           1e3, 1e3, ...
@@ -155,28 +253,45 @@ ocp.cost.zu = 1e3 * ones(n_sbx, 1);
 
 ocp.constraints.x0 = xEq;
 
-if ~exist('ocp_solver', 'var') || ~isvalid(ocp_solver)
-    fprintf('\n--- Building acados OCP solver (reduced, nx=%d) ---\n', nx);
-    ocp_solver = AcadosOcpSolver(ocp);
+if use_nmpc
+    if ~exist('ocp_solver', 'var') || ~isvalid(ocp_solver)
+        fprintf('\n--- Building acados OCP solver (reduced, nx=%d) ---\n', nx);
+        ocp_solver = AcadosOcpSolver(ocp);
+    else
+        fprintf('\n--- Reusing OCP solver ---\n');
+    end
 else
-    fprintf('\n--- Reusing OCP solver ---\n');
+    fprintf('\n--- Skipping OCP solver build for RL controller ---\n');
+    ocp_solver = [];
 end
 
-if ~exist('sim_solver', 'var') || ~isvalid(sim_solver)
-    fprintf('\n--- Building acados sim solver (reduced, nx=%d) ---\n', nx);
-    sim = AcadosSim();
-    sim.model.name        = 'maglev_sim_reduced';
-    sim.model.x           = x_r;
-    sim.model.u           = u_sym;
-    sim.model.xdot        = xdot_r;
-    sim.model.f_impl_expr = xdot_r - f_expl_r;
-    sim.solver_options.Tsim            = dt_mpc;
-    sim.solver_options.integrator_type = 'IRK';
-    sim.solver_options.num_stages      = 1;
-    sim.solver_options.num_steps       = 1;
-    sim_solver = AcadosSimSolver(sim);
+use_acados_sim = strcmpi(plant_integrator, 'acados');
+use_ode15s_sim = any(strcmpi(plant_integrator, {'ode15s','ode15'}));
+use_ode15s_full_sim = strcmpi(plant_integrator, 'ode15s_full');
+if ~(use_acados_sim || use_ode15s_sim || use_ode15s_full_sim)
+    error('Unsupported plant_integrator "%s". Use "acados", "ode15s", or "ode15s_full".', plant_integrator);
+end
+
+if use_acados_sim
+    if ~exist('sim_solver', 'var') || ~isvalid(sim_solver)
+        fprintf('\n--- Building acados sim solver (reduced, nx=%d) ---\n', nx);
+        sim = AcadosSim();
+        sim.model.name        = 'maglev_sim_reduced';
+        sim.model.x           = x_r;
+        sim.model.u           = u_sym;
+        sim.model.xdot        = xdot_r;
+        sim.model.f_impl_expr = xdot_r - f_expl_r;
+        sim.solver_options.Tsim            = dt_mpc;
+        sim.solver_options.integrator_type = 'IRK';
+        sim.solver_options.num_stages      = 1;
+        sim.solver_options.num_steps       = 1;
+        sim_solver = AcadosSimSolver(sim);
+    else
+        fprintf('\n--- Reusing sim solver ---\n');
+    end
 else
-    fprintf('\n--- Reusing sim solver ---\n');
+    fprintf('\n--- Using %s plant integration ---\n', plant_integrator);
+    sim_solver = [];
 end
 
 %% =========================================================================
@@ -224,14 +339,15 @@ fprintf('\n--- Box-Behnken design: %d design points (k=4 factors) ---\n', n_desi
 n_replicates = 3;          % set higher for more statistical power
 
 %% --- SIMULATION CONFIG ---
-sim_steps  = 1500;          % shorter than 2000 in baseline -- fewer runs needed
+sim_duration = 7.5;         % seconds; keeps physical run length comparable across controller rates
+sim_steps  = round(sim_duration / dt_mpc);
 settle_idx = round(0.5 * sim_steps); % use last 50% of run for RMS metric
 
-% Perturbation direction (same as baseline)
-dx_dir = [0.005; -0.008; 0.010; 0.15; -0.10; ...
-          0.01;  -0.01;  0.0;   0.2;  -0.3];
-perturbation_scale = 0.05;
-x0_perturbed = xEq + perturbation_scale * dx_dir;
+% Start the test exactly at equilibrium for the NMPC case.
+% perturbation_scale = 0.05;
+% dx_dir = [0.005; -0.008; 0.010; 0.15; -0.10; ...
+%           0.01;  -0.01;  0.0;   0.2;  -0.3];
+x0_perturbed = xEq;
 
 % Map factor index -> state indices (reduced model)
 %   1 -> sigma_pos applied to states [1 2 3]   (x, y, z)
@@ -260,46 +376,97 @@ div_angle  = 0.30;      % rad (~17 deg)
 div_lin_v  = 0.50;      % m/s
 div_ang_v  = 5.0;       % rad/s
 
+% The tight box above protects the NMPC solver from pathological states.
+% RL policies do not feed a QP solver, and these agents were trained with
+% wider observation limits, especially angular rates (up to +-50 rad/s).
+if use_rl
+    div_pos_xy = 0.08;   % m
+    div_pos_z  = 0.08;   % m around zEq
+    div_angle  = 1.00;   % rad
+    div_lin_v  = 5.00;   % m/s
+    div_ang_v  = 50.0;   % rad/s
+end
+
 %% --- BASELINE: noise-free reference ---
 % A noiseless closed-loop run, identical otherwise to the noisy ones.
 % Establishes (a) that the controller works in this config, (b) a floor RMS
 % to compare noisy runs against. If this diverges we abort the sweep.
 fprintf('\n--- Baseline noise-free run ---\n');
-rng(0,'twister'); try, ocp_solver.reset(); end %#ok<TRYNC>
-x_current = x0_perturbed;
-for k = 0:N
-    ak = k/N;
-    ocp_solver.set('x', (1-ak)*x_current + ak*xEq, k);
+rng(0,'twister');
+if use_nmpc
+    try
+        ocp_solver.reset();
+    catch
+    end
 end
-for k = 0:N-1
-    ocp_solver.set('u', uEq, k);
+x_current = x0_perturbed;
+x_full_current = reducedToFullState(x_current);
+if use_nmpc
+    for k = 0:N
+        ak = k/N;
+        ocp_solver.set('x', (1-ak)*x_current + ak*xEq, k);
+    end
+    for k = 0:N-1
+        ocp_solver.set('u', uEq, k);
+    end
 end
 plot_x_base = zeros(nx, sim_steps+1);
 plot_x_base(:,1) = x_current;
+baseline_diverged = false;
+baseline_last_step = sim_steps;
+baseline_div_reason = '';
 for i = 1:sim_steps
-    ocp_solver.set('constr_x0', x_current);    % NO noise
-    ocp_solver.solve();
-    u_a = max(min(ocp_solver.get('u', 0), 1), -1);
-    sim_solver.set('x', x_current);
-    sim_solver.set('u', u_a);
-    sim_solver.solve();
-    x_current = sim_solver.get('xn');
+    if any(~isfinite(x_current))
+        baseline_div_reason = 'nonfinite state';
+    elseif max(abs(x_current(1:2))) > div_pos_xy
+        baseline_div_reason = 'xy position bound';
+    elseif abs(x_current(3) - zEq_cas) > div_pos_z
+        baseline_div_reason = 'z position bound';
+    elseif max(abs(x_current(4:5))) > div_angle
+        baseline_div_reason = 'angle bound';
+    elseif max(abs(x_current(6:8))) > div_lin_v
+        baseline_div_reason = 'linear velocity bound';
+    elseif max(abs(x_current(9:10))) > div_ang_v
+        baseline_div_reason = 'angular velocity bound';
+    end
+    if ~isempty(baseline_div_reason)
+        baseline_diverged = true;
+        baseline_last_step = i;
+        break;
+    end
+
+    u_a = getNoiseTestAction(controller_type, ocp_solver, agent, x_current, xEq, ...
+        agent_observation, rl_action_sign, rl_action_order);
+    [x_current, x_full_current] = stepNoiseTestPlant(plant_integrator, sim_solver, f_func_r, ...
+        x_current, x_full_current, u_a, dt_mpc, paramsFast);
     plot_x_base(:, i+1) = x_current;
     % Warm-start shift
-    x_traj = ocp_solver.get('x');  u_traj = ocp_solver.get('u');
-    for k = 0:N
-        if k < N, ocp_solver.set('x', x_traj(:,k+2), k); else, ocp_solver.set('x', xEq, k); end
-    end
-    for k = 0:N-1
-        if k < N-1, ocp_solver.set('u', u_traj(:,k+2), k); else, ocp_solver.set('u', uEq, k); end
+    if use_nmpc
+        x_traj = ocp_solver.get('x');  u_traj = ocp_solver.get('u');
+        for k = 0:N
+            if k < N, ocp_solver.set('x', x_traj(:,k+2), k); else, ocp_solver.set('x', xEq, k); end
+        end
+        for k = 0:N-1
+            if k < N-1, ocp_solver.set('u', u_traj(:,k+2), k); else, ocp_solver.set('u', uEq, k); end
+        end
     end
 end
-err_base = (plot_x_base(:, settle_idx+1:end) - xEq) .* err_weight;
+baseline_n_samples = max(1, baseline_last_step);
+baseline_metric_start = min(settle_idx+1, baseline_n_samples);
+err_base = (plot_x_base(:, baseline_metric_start:baseline_n_samples) - xEq) .* err_weight;
 y_rms_base = sqrt(mean(sum(err_base.^2, 1)));
-pos_dev_base = max(sqrt(sum((plot_x_base(1:3,2:end) - xEq(1:3)).^2, 1)));
-fprintf('  baseline:  y_rms=%.4e   max |pos-eq|=%.4e m\n', y_rms_base, pos_dev_base);
-if any(~isfinite(plot_x_base(:,end))) || abs(plot_x_base(3,end)-zEq_cas) > 0.005
-    error('Baseline noise-free run failed -- OCP/sim setup is broken; do not proceed.');
+pos_dev_base = max(sqrt(sum((plot_x_base(1:3,1:baseline_n_samples) - xEq(1:3)).^2, 1)));
+fprintf('  baseline (%s):  diverged=%d  step=%d  y_rms=%.4e   max |pos-eq|=%.4e m\n', ...
+    controller_name, baseline_diverged, baseline_last_step, y_rms_base, pos_dev_base);
+if baseline_diverged
+    fprintf('  baseline divergence reason: %s\n', baseline_div_reason);
+    fprintf('  state at stop: p=[%+.4e %+.4e %+.4e], ang=[%+.4e %+.4e], v=[%+.4e %+.4e %+.4e], w=[%+.4e %+.4e]\n', ...
+        x_current(1), x_current(2), x_current(3), x_current(4), x_current(5), ...
+        x_current(6), x_current(7), x_current(8), x_current(9), x_current(10));
+end
+if baseline_diverged || any(~isfinite(plot_x_base(:, max(1, baseline_last_step)))) || abs(x_current(3)-zEq_cas) > 0.005
+    error('Baseline noise-free run failed for controller "%s" (%s); do not proceed with noise sweep.', ...
+        controller_name, controller_type);
 end
 
 %% =========================================================================
@@ -341,14 +508,22 @@ for f = 1:4
         rms_acc = nan(ofat_n_reps,1);
         for r = 1:ofat_n_reps
             rng(7000 + 100*f + 10*li + r, 'twister');
-            try, ocp_solver.reset(); end %#ok<TRYNC>
-            x_current = x0_perturbed;
-            for k = 0:N
-                ak = k/N;
-                ocp_solver.set('x', (1-ak)*x_current + ak*xEq, k);
+            if use_nmpc
+                try
+                    ocp_solver.reset();
+                catch
+                end
             end
-            for k = 0:N-1
-                ocp_solver.set('u', uEq, k);
+            x_current = x0_perturbed;
+            x_full_current = reducedToFullState(x_current);
+            if use_nmpc
+                for k = 0:N
+                    ak = k/N;
+                    ocp_solver.set('x', (1-ak)*x_current + ak*xEq, k);
+                end
+                for k = 0:N-1
+                    ocp_solver.set('u', uEq, k);
+                end
             end
 
             plot_x_o = zeros(nx, sim_steps+1);
@@ -364,20 +539,19 @@ for f = 1:4
                     div = true; break;
                 end
                 x_meas = x_current + sigma_vec .* randn(nx,1);
-                ocp_solver.set('constr_x0', x_meas);
-                ocp_solver.solve();
-                u_a = max(min(ocp_solver.get('u',0), 1), -1);
-                sim_solver.set('x', x_current);
-                sim_solver.set('u', u_a);
-                sim_solver.solve();
-                x_current = sim_solver.get('xn');
+                u_a = getNoiseTestAction(controller_type, ocp_solver, agent, x_meas, xEq, ...
+                    agent_observation, rl_action_sign, rl_action_order);
+                [x_current, x_full_current] = stepNoiseTestPlant(plant_integrator, sim_solver, f_func_r, ...
+                    x_current, x_full_current, u_a, dt_mpc, paramsFast);
                 plot_x_o(:, i+1) = x_current;
-                x_traj = ocp_solver.get('x'); u_traj = ocp_solver.get('u');
-                for k = 0:N
-                    if k < N, ocp_solver.set('x', x_traj(:,k+2), k); else, ocp_solver.set('x', xEq, k); end
-                end
-                for k = 0:N-1
-                    if k < N-1, ocp_solver.set('u', u_traj(:,k+2), k); else, ocp_solver.set('u', uEq, k); end
+                if use_nmpc
+                    x_traj = ocp_solver.get('x'); u_traj = ocp_solver.get('u');
+                    for k = 0:N
+                        if k < N, ocp_solver.set('x', x_traj(:,k+2), k); else, ocp_solver.set('x', xEq, k); end
+                    end
+                    for k = 0:N-1
+                        if k < N-1, ocp_solver.set('u', u_traj(:,k+2), k); else, ocp_solver.set('u', uEq, k); end
+                    end
                 end
             end
             if div
@@ -457,7 +631,7 @@ for f = 1:4
     title(sprintf('OFAT: factor %d (%s)', f, factor_names{f}), 'Interpreter','none');
 end
 sgtitle('Per-factor noise sensitivity (others at zero noise)');
-savefig(fig_ofat, 'ofat_sensitivity.fig');
+savefig(fig_ofat, ['ofat_sensitivity' output_suffix '.fig']);
 
 %% --- RUN THE DESIGNED EXPERIMENT ---
 n_runs   = n_design * n_replicates;
@@ -473,6 +647,9 @@ y_diverged = zeros(n_runs,1);
 run_idx = 0;
 fprintf('\n--- Starting RSM sweep: %d design pts x %d reps = %d runs ---\n', ...
     n_design, n_replicates, n_runs);
+fprintf('Controller under test: %s (%s), plant=%s, dt = %.4g s, sim_steps = %d\n', ...
+    controller_name, controller_type, plant_integrator, dt_mpc, sim_steps);
+fprintf('Plant parameter set: %s\n', plant_parameter_set);
 t_sweep_start = tic;
 
 for d = 1:n_design
@@ -495,14 +672,22 @@ for d = 1:n_design
         end
 
         % --- Solver reset + clean trajectory init ---
-        try, ocp_solver.reset(); end %#ok<TRYNC>
-        x_current = x0_perturbed;
-        for k = 0:N
-            ak = k/N;
-            ocp_solver.set('x', (1-ak)*x_current + ak*xEq, k);
+        if use_nmpc
+            try
+                ocp_solver.reset();
+            catch
+            end
         end
-        for k = 0:N-1
-            ocp_solver.set('u', uEq, k);
+        x_current = x0_perturbed;
+        x_full_current = reducedToFullState(x_current);
+        if use_nmpc
+            for k = 0:N
+                ak = k/N;
+                ocp_solver.set('x', (1-ak)*x_current + ak*xEq, k);
+            end
+            for k = 0:N-1
+                ocp_solver.set('u', uEq, k);
+            end
         end
 
         plot_x      = zeros(nx, sim_steps+1);
@@ -528,32 +713,30 @@ for d = 1:n_design
             % --- Inject measurement noise on the state passed to the OCP ---
             x_meas = x_current + sigma_vec .* randn(nx,1);
 
-            ocp_solver.set('constr_x0', x_meas);
-            ocp_solver.solve();
-            u_applied = ocp_solver.get('u', 0);
-            u_applied = max(min(u_applied, 1), -1);
+            u_applied = getNoiseTestAction(controller_type, ocp_solver, agent, x_meas, xEq, ...
+                agent_observation, rl_action_sign, rl_action_order);
 
             % --- True plant integrated from true state, with controller u ---
-            sim_solver.set('x', x_current);
-            sim_solver.set('u', u_applied);
-            sim_solver.solve();
-            x_next = sim_solver.get('xn');
+            [x_next, x_full_current] = stepNoiseTestPlant(plant_integrator, sim_solver, f_func_r, ...
+                x_current, x_full_current, u_applied, dt_mpc, paramsFast);
 
             % --- Warm-start shift ---
-            x_traj = ocp_solver.get('x');
-            u_traj = ocp_solver.get('u');
-            for k = 0:N
-                if k < N
-                    ocp_solver.set('x', x_traj(:, k+2), k);
-                else
-                    ocp_solver.set('x', xEq, k);
+            if use_nmpc
+                x_traj = ocp_solver.get('x');
+                u_traj = ocp_solver.get('u');
+                for k = 0:N
+                    if k < N
+                        ocp_solver.set('x', x_traj(:, k+2), k);
+                    else
+                        ocp_solver.set('x', xEq, k);
+                    end
                 end
-            end
-            for k = 0:N-1
-                if k < N-1
-                    ocp_solver.set('u', u_traj(:, k+2), k);
-                else
-                    ocp_solver.set('u', uEq, k);
+                for k = 0:N-1
+                    if k < N-1
+                        ocp_solver.set('u', u_traj(:, k+2), k);
+                    else
+                        ocp_solver.set('u', uEq, k);
+                    end
                 end
             end
 
@@ -593,6 +776,15 @@ results.y_diverged = y_diverged;
 %% --- SAVE RAW DATA ---
 rsm_data = struct();
 rsm_data.results       = results;
+rsm_data.controller_type = controller_type;
+rsm_data.controller_name = controller_name;
+rsm_data.agent_path    = agent_path;
+rsm_data.agent_observation = agent_observation;
+rsm_data.rl_policy_mode = rl_policy_mode;
+rsm_data.rl_action_sign = rl_action_sign;
+rsm_data.rl_action_order = rl_action_order;
+rsm_data.plant_integrator = plant_integrator;
+rsm_data.plant_parameter_set = plant_parameter_set;
 rsm_data.factor_names  = factor_names;
 rsm_data.log_center    = log_center;
 rsm_data.step_per_unit = step_per_unit;
@@ -606,8 +798,9 @@ rsm_data.div_bounds    = struct('pos_xy',div_pos_xy,'pos_z',div_pos_z, ...
 rsm_data.ofat          = ofat;
 rsm_data.ofat_thresholds = ofat_thresholds;
 
-save('rsm_noise_results.mat', '-struct', 'rsm_data');
-fprintf('Raw data saved to rsm_noise_results.mat\n');
+results_file = ['rsm_noise_results' output_suffix '.mat'];
+save(results_file, '-struct', 'rsm_data');
+fprintf('Raw data saved to %s\n', results_file);
 
 %% =========================================================================
 %  RESPONSE SURFACE FIT (second-order polynomial with interactions)
@@ -678,7 +871,7 @@ for k = 1:size(pair_list,1)
     title(sprintf('log10(y\\_rms): %s vs %s', factor_names{i1}, factor_names{i2}), 'Interpreter','tex');
 end
 sgtitle('Response surface contours -- pairwise (other factors = center)');
-savefig(fig1, 'rsm_contours_yrms.fig');
+savefig(fig1, ['rsm_contours_yrms' output_suffix '.fig']);
 
 %% --- DIVERGENCE-PROBABILITY CONTOURS ---
 fig2 = figure('Name','RSM contours: P(diverged)','Position',[60 60 1200 800]);
@@ -696,7 +889,7 @@ for k = 1:size(pair_list,1)
     Z = reshape(z, size(GX));
 
     contourf(GX, GY, Z, linspace(0,1,11), 'LineColor','none'); hold on;
-    caxis([0 1]); colorbar;
+    clim([0 1]); colorbar;
     contour(GX, GY, Z, [0.5 0.5], 'r', 'LineWidth', 2);  % 50% failure boundary
     scatter(results.(sprintf('f%d',i1)), results.(sprintf('f%d',i2)), ...
         25, 'w', 'filled', 'MarkerEdgeColor','k');
@@ -705,7 +898,7 @@ for k = 1:size(pair_list,1)
     title(sprintf('P(diverged): %s vs %s', factor_names{i1}, factor_names{i2}), 'Interpreter','tex');
 end
 sgtitle('Divergence probability -- red line = 50% failure boundary');
-savefig(fig2, 'rsm_contours_pdiv.fig');
+savefig(fig2, ['rsm_contours_pdiv' output_suffix '.fig']);
 
 %% --- MAIN-EFFECTS PLOT (Pareto-style) ---
 fig3 = figure('Name','RSM main effects','Position',[100 100 900 500]);
@@ -720,7 +913,7 @@ barh(estimates(ord)); hold on; grid on;
 set(gca, 'YTick', 1:numel(ord), 'YTickLabel', names_eff(ord), 'YDir','reverse');
 xlabel('Coefficient (log10 y\_rms)');
 title('Standardised effects on log10(RMS tracking error)');
-savefig(fig3, 'rsm_main_effects.fig');
+savefig(fig3, ['rsm_main_effects' output_suffix '.fig']);
 
 %% --- TEXT REPORT: success rate per design + tolerances ---
 fprintf('\n--- Summary ---\n');
@@ -763,3 +956,85 @@ for f = 1:4
 end
 
 fprintf('\nDone. Edit n_replicates / step_per_unit / log_center to refine.\n');
+
+function u = getNoiseTestAction(controller_type, ocp_solver, agent, x_meas, xEq, ...
+    agent_observation, rl_action_sign, rl_action_order)
+%GETNOISETESTACTION Compute bounded controller input for the noise tests.
+    switch lower(controller_type)
+        case 'nmpc'
+            ocp_solver.set('constr_x0', x_meas);
+            ocp_solver.solve();
+            u = ocp_solver.get('u', 0);
+
+        case {'rl100','rl1000'}
+            switch lower(agent_observation)
+                case 'state'
+                    x_for_agent = x_meas;
+                case 'error'
+                    x_for_agent = x_meas - xEq;
+                otherwise
+                    error('Unsupported agent_observation "%s". Use "state" or "error".', agent_observation);
+            end
+
+            u = getAction(agent, x_for_agent);
+            if iscell(u)
+                u = u{1};
+            end
+            if isa(u, 'dlarray')
+                u = extractdata(u);
+            end
+
+        otherwise
+            error('Unsupported controller_type "%s". Use "nmpc", "rl100", or "rl1000".', controller_type);
+    end
+
+    u = double(u(:));
+    if numel(u) ~= 4
+        error('Controller returned %d actions, expected 4.', numel(u));
+    end
+    if ~strcmpi(controller_type, 'nmpc')
+        if numel(rl_action_order) ~= 4 || any(sort(rl_action_order(:))' ~= 1:4)
+            error('rl_action_order must be a permutation of 1:4.');
+        end
+        u = rl_action_sign * u(rl_action_order);
+    end
+    u = max(min(u, 1), -1);
+end
+
+function [x_next, x_full_next] = stepNoiseTestPlant(plant_integrator, sim_solver, f_func_r, ...
+    x_current, x_full_current, u_applied, dt, paramsFast)
+%STEPNOISETESTPLANT Propagate the reduced-order plant by one controller step.
+    switch lower(plant_integrator)
+        case 'acados'
+            sim_solver.set('x', x_current);
+            sim_solver.set('u', u_applied);
+            sim_solver.solve();
+            x_next = sim_solver.get('xn');
+            x_full_next = reducedToFullState(x_next);
+
+        case {'ode15s','ode15'}
+            ode_rhs = @(~, x) full(f_func_r(x, u_applied));
+            ode_opts = odeset('RelTol', 1e-6, 'AbsTol', 1e-8);
+            [~, x_traj] = ode15s(ode_rhs, [0 dt], x_current, ode_opts);
+            x_next = x_traj(end, :)';
+            x_full_next = reducedToFullState(x_next);
+
+        case 'ode15s_full'
+            ode_rhs = @(~, x) maglevSystemDynamics(x, u_applied, paramsFast, 'fast');
+            ode_opts = odeset('RelTol', 1e-6, 'AbsTol', 1e-8);
+            [~, x_traj] = ode15s(ode_rhs, [0 dt], x_full_current, ode_opts);
+            x_full_next = x_traj(end, :)';
+            x_next = fullToReducedState(x_full_next);
+
+        otherwise
+            error('Unsupported plant_integrator "%s". Use "acados", "ode15s", or "ode15s_full".', plant_integrator);
+    end
+end
+
+function x_full = reducedToFullState(x_r)
+    x_full = [x_r(1:5); 0; x_r(6:8); x_r(9:10); 0];
+end
+
+function x_r = fullToReducedState(x_full)
+    x_r = [x_full(1:5); x_full(7:11)];
+end

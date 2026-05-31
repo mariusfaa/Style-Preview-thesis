@@ -1,5 +1,5 @@
 factor_idx,factor_name,log10_center,sigma_thr_p50
-1,sigma_pos,-4.5,9.30572040929699e-05
+1,sigma_pos,-4.5,0.000115478198468946
 2,sigma_ori,-3.5,0.000486967525165863
-3,sigma_vel,-3.5,0.00523299114681495
+3,sigma_vel,-3.5,0.00649381631576211
 4,sigma_ang,-2.5,NaN
